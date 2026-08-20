@@ -1,0 +1,2155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Alumnos - Sergio Fernandez Personal Trainer</title>
+    
+    <!-- ICONO DE LA WEB (FAVICON) Y APLICACIÓN MÓVIL -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SF Fitness">
+
+    <style>
+        /* --- MÁRGENES Y CONFIGURACIÓN GENERAL --- */
+        @page {
+            size: A4 portrait;
+            margin: 4mm 2mm 4mm 2mm !important;
+            background-color: #000000 !important;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        html, body {
+            background-color: #050505 !important;
+            color: #ffffff !important;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        body {
+            padding: 6px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            object-fit: contain;
+        }
+
+        .emoji-red {
+            font-style: normal;
+        }
+
+        /* --- FONDO DE GYM Y MARCA DE AGUA GENERAL (MÁS NOTORIA Y GRANDE) --- */
+        .gym-bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(5, 5, 5, 0.92)), 
+                        url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .watermark-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(85vw, 600px);
+            height: min(85vw, 600px);
+            background-image: url('logo.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: contain;
+            opacity: 0.18;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* --- PANTALLA DE LOGIN --- */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.96)), 
+                        url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 15px;
+        }
+
+        .login-card {
+            background: rgba(10, 10, 10, 0.92);
+            backdrop-filter: blur(10px);
+            border: 2px solid #d4af37;
+            border-radius: 14px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0px 0px 30px rgba(212, 175, 55, 0.25);
+        }
+
+        .login-logo {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 12px auto;
+            display: block;
+            filter: drop-shadow(0 0 10px rgba(212,175,55,0.4));
+        }
+
+        .login-title {
+            color: #d4af37;
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .login-subtitle {
+            color: #aaaaaa;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .login-header-action {
+            color: #d4af37;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            border-bottom: 1.5px solid rgba(212, 175, 55, 0.5);
+            padding-bottom: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            color: #d4af37;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(18, 18, 18, 0.9);
+            border: 1.5px solid rgba(212, 175, 55, 0.5);
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(135deg, #d4af37 0%, #aa8828 100%);
+            color: #000000;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn-login:hover {
+            transform: scale(1.02);
+        }
+
+        .error-message {
+            color: #e53e3e;
+            font-size: 11px;
+            margin-top: 15px;
+            display: none;
+            font-weight: bold;
+        }
+
+        /* --- CONTENIDO PRINCIPAL Y VISTAS --- */
+        #app-content {
+            display: none;
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            flex-direction: column;
+            flex: 1;
+            width: 100%;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: transparent !important;
+            padding: 4px;
+            position: relative;
+            flex: 1;
+            z-index: 2;
+            width: 100%;
+        }
+
+        #dashboard-view {
+            display: block;
+            width: 100%;
+        }
+
+        #plan-editor-view {
+            display: none;
+            width: 100%;
+        }
+
+        /* BARRA SUPERIOR CON MENÚ HAMBURGUESA */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(8px);
+            border: 2px solid #d4af37;
+            border-radius: 12px;
+            padding: 10px 16px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1000; /* CORREGIDO: Elevado para asegurar que esté al frente */
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .navbar-brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-logo-img {
+            width: 36px;
+            height: 36px;
+        }
+
+        .navbar-brand-text {
+            color: #d4af37;
+            font-size: 14px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .hamburger-menu-container {
+            position: relative;
+        }
+
+        .hamburger-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #aa8828 100%);
+            color: #000000;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .hamburger-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .dropdown-menu-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            min-width: 230px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            z-index: 9999; /* CORREGIDO: z-index muy alto para que salga completamente al frente */
+            overflow: hidden;
+        }
+
+        .dropdown-menu-content.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(212, 175, 55, 0.2);
+            color: #d4af37;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+            color: #e53e3e;
+        }
+
+        /* HERO / ENCABEZADO PRINCIPAL */
+        .dashboard-hero {
+            background: linear-gradient(rgba(10, 10, 10, 0.85), rgba(15, 15, 15, 0.92)), 
+                        url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1200&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            border: 2px solid #d4af37;
+            border-radius: 16px;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-hero::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-logo {
+            width: 85px;
+            height: 85px;
+            margin: 0 auto 14px auto;
+            display: block;
+            filter: drop-shadow(0 0 12px rgba(212,175,55,0.5));
+        }
+
+        .dashboard-hero h1 {
+            color: #d4af37;
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .dashboard-hero p {
+            color: #e0e0e0;
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* CUADRO GENERAR PLAN DE ENTRENAMIENTO */
+        .generate-plan-card {
+            background: rgba(12, 12, 12, 0.88);
+            backdrop-filter: blur(8px);
+            border: 2px solid #d4af37;
+            border-radius: 14px;
+            padding: 24px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 18px rgba(212, 175, 55, 0.2);
+        }
+
+        .generate-plan-card h2 {
+            color: #d4af37;
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .generate-plan-card p {
+            color: #cccccc;
+            font-size: 12px;
+            margin-bottom: 18px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-gold-large {
+            background: linear-gradient(135deg, #d4af37 0%, #aa8828 100%);
+            color: #000000;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-gold-large:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* --- PANELES ADMINISTRATIVOS --- */
+        .admin-panel {
+            background: rgba(10, 10, 10, 0.92);
+            backdrop-filter: blur(10px);
+            border: 2px solid #d4af37;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.2);
+            position: relative;
+        }
+
+        .admin-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .admin-panel-header h3 {
+            color: #d4af37;
+            font-size: 14px;
+            text-transform: uppercase;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .close-panel-btn {
+            background: #121212;
+            color: #d4af37;
+            border: 1.5px solid #d4af37;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-panel-btn:hover {
+            background: #d4af37;
+            color: #000000;
+        }
+
+        .admin-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .admin-form input, .admin-form select {
+            padding: 11px;
+            background: rgba(18, 18, 18, 0.9);
+            border: 1.5px solid rgba(212, 175, 55, 0.5);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 12px;
+            flex: 1 1 150px;
+            outline: none;
+        }
+
+        .user-list-container {
+            max-height: 280px;
+            overflow-y: auto;
+            border: 1.5px solid rgba(212, 175, 55, 0.4);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .user-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1.5px solid rgba(212, 175, 55, 0.2);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .user-role-select {
+            background: #121212;
+            color: #d4af37;
+            border: 1.5px solid #d4af37;
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            outline: none;
+        }
+
+        .exercise-db-view {
+            max-height: 220px;
+            overflow-y: auto;
+            border: 1.5px solid rgba(212, 175, 55, 0.4);
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            margin-top: 10px;
+        }
+
+        .ex-group-item {
+            margin-bottom: 10px;
+        }
+
+        .ex-group-title {
+            color: #d4af37;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 1.5px solid rgba(212, 175, 55, 0.4);
+            padding-bottom: 3px;
+            margin-bottom: 6px;
+        }
+
+        .ex-tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .ex-tag {
+            background: #121212;
+            border: 1px solid #d4af37;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 10.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #ffffff;
+        }
+
+        .ex-tag-remove {
+            color: #e53e3e;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* CAMBIAR CONTRASEÑA */
+        .password-card-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-input-wrapper input {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(18, 18, 18, 0.9);
+            border: 1.5px solid rgba(212, 175, 55, 0.5);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .password-input-wrapper input:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.25);
+        }
+
+        .btn-gold-action {
+            background: linear-gradient(135deg, #d4af37 0%, #aa8828 100%);
+            color: #000000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            transition: opacity 0.2s;
+        }
+
+        .btn-gold-action:hover {
+            opacity: 0.95;
+        }
+
+        /* LISTA DE ALUMNOS */
+        .students-section-title {
+            color: #d4af37;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            border-left: 4px solid #d4af37;
+            padding-left: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .student-card {
+            background: rgba(10, 10, 10, 0.88);
+            backdrop-filter: blur(6px);
+            border: 1.5px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+
+        .student-card:hover {
+            border-color: #d4af37;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(212, 175, 55, 0.15);
+        }
+
+        .student-info h4 {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .student-info p {
+            color: #aaaaaa;
+            font-size: 11.5px;
+        }
+
+        .student-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Botones generales */
+        .btn {
+            background: linear-gradient(135deg, #d4af37 0%, #aa8828 100%);
+            color: #000000;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        .btn:hover { opacity: 0.95; }
+        .btn-danger { background: linear-gradient(135deg, #e53e3e 0%, #9b2c2c 100%); color: #ffffff; }
+        .btn-secondary { background: #121212; color: #d4af37; border: 1.5px solid #d4af37; }
+        .btn-sm { padding: 5px 10px; font-size: 11px; }
+
+        /* --- ENCABEZADO Y BANNER SUPERIOR (EDITOR) CON LOGOS UNIFORMES --- */
+        .header-banner {
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-main-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px;
+            gap: 15px;
+        }
+
+        .header-left-logo {
+            flex: 0 0 130px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-logo-large {
+            width: 95px;
+            height: 95px;
+            display: block;
+        }
+
+        .header-divider {
+            width: 2px;
+            background: linear-gradient(180deg, transparent 0%, #d4af37 15%, #d4af37 85%, transparent 100%);
+            border-radius: 2px;
+            flex-shrink: 0;
+            align-self: stretch;
+        }
+
+        .header-right-text {
+            flex: 1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2px 0;
+        }
+
+        .main-title {
+            color: #d4af37;
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 2px;
+        }
+
+        .sub-title {
+            color: #ffffff !important;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .trainer-title {
+            color: #d4af37;
+            font-size: 9.5px;
+            font-weight: 800;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .motto-container {
+            text-align: center;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .editable-motto {
+            color: #ffffff !important;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: transparent;
+            border: none;
+            border-bottom: 1.5px dashed rgba(212, 175, 55, 0.6);
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+            outline: none;
+            padding: 2px;
+            font-family: inherit;
+            resize: none;
+            overflow: hidden;
+            display: block;
+            line-height: 1.2;
+        }
+
+        /* --- TARJETA DE ATLETA --- */
+        .athlete-card {
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            background: #000000;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 15px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            background: #000000;
+        }
+
+        .gold-icon {
+            width: 16px;
+            height: 16px;
+            fill: #d4af37;
+            flex-shrink: 0;
+        }
+
+        .card-field label {
+            color: #ffffff !important;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .card-field input {
+            background: #121212;
+            border: none;
+            border-bottom: 1.5px solid rgba(212, 175, 55, 0.5);
+            color: #ffffff !important;
+            font-size: 12px;
+            width: 100%;
+            padding: 4px 6px;
+            outline: none;
+        }
+
+        /* --- BLOQUE DE DÍA --- */
+        .day-block {
+            margin-bottom: 10px;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            page-break-before: auto;
+            padding-top: 4px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 6px 0 4px 0;
+            border-left: 4px solid #d4af37;
+            padding-left: 8px;
+            gap: 8px;
+            flex-wrap: wrap;
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+
+        .header-title-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1 1 auto;
+        }
+
+        .day-prefix {
+            font-size: 13px;
+            color: #d4af37;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .group-select-inline {
+            background: #000000;
+            color: #ffffff;
+            border: 1.5px solid #d4af37;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            outline: none;
+            cursor: pointer;
+            max-width: 250px;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 4px;
+            border-radius: 6px;
+            border: 2px solid #d4af37;
+            background: #000000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        table {
+            width: 100%;
+            min-width: 650px;
+            border-collapse: collapse;
+            background: #000000;
+            table-layout: fixed;
+        }
+
+        th {
+            background-color: #0b0b0b;
+            color: #d4af37;
+            font-weight: 700;
+            text-align: left;
+            padding: 8px 10px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #d4af37;
+            border-right: 1.5px solid rgba(212, 175, 55, 0.3);
+        }
+
+        th:last-child { border-right: none; }
+
+        td {
+            padding: 7px 8px;
+            border-bottom: 1.5px solid rgba(212, 175, 55, 0.25);
+            border-right: 1.5px solid rgba(212, 175, 55, 0.15);
+            font-size: 12.5px;
+            color: #ffffff;
+            vertical-align: middle;
+            background: #000000;
+        }
+
+        td:last-child { border-right: none; }
+        tr:nth-child(even) td { background-color: #080808; }
+
+        select, input[type="text"] {
+            background: #121212;
+            color: #ffffff;
+            border: 1.5px solid rgba(212, 175, 55, 0.4);
+            border-radius: 4px;
+            padding: 6px 8px;
+            font-size: 12.5px;
+            width: 100%;
+        }
+
+        .table-textarea {
+            background: transparent;
+            color: #ffffff;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 12.5px;
+            width: 100%;
+            resize: none;
+            overflow: hidden;
+            display: block;
+            line-height: 1.3;
+        }
+
+        /* --- CAJA DE NOTAS GENERALES --- */
+        .notes-box {
+            background: #000000;
+            border-left: 4px solid #d4af37;
+            border-top: 2px solid rgba(212, 175, 55, 0.6);
+            border-right: 2px solid rgba(212, 175, 55, 0.6);
+            border-bottom: 2px solid rgba(212, 175, 55, 0.6);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .notes-box strong {
+            color: #d4af37;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 12.5px;
+        }
+
+        .editable-textarea {
+            width: 100%;
+            min-height: 45px;
+            background: transparent;
+            color: #ffffff;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 12px;
+            line-height: 1.3;
+            resize: none;
+            overflow: hidden;
+        }
+
+        /* --- PIE DE PÁGINA Y DERECHOS RESERVADOS --- */
+        .page-footer-container {
+            position: relative;
+            width: 100%;
+            text-align: center;
+            background-color: #000000;
+            z-index: 999;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+            page-break-inside: avoid;
+        }
+
+        .page-footer-container::after {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 1.5px;
+            background: #d4af37;
+            order: 2;
+            margin: 6px 0 8px 0;
+        }
+
+        .bottom-logo-small {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 4px auto;
+            display: block;
+            order: 1;
+            filter: drop-shadow(0 0 6px rgba(212,175,55,0.3));
+        }
+
+        .footer {
+            order: 3;
+            text-align: center;
+            font-size: 10.5px;
+            color: #dddddd;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            width: 100%;
+            font-weight: 700;
+        }
+
+        /* ==========================================================
+           MÓVIL Y OPTIMIZACIÓN
+           ========================================================== */
+        @media screen and (max-width: 767px) {
+            body { padding: 6px; }
+            .container { padding: 0; }
+            .header-banner { padding: 12px 8px; text-align: center; }
+            .header-main-layout { flex-direction: column; align-items: center; text-align: center; gap: 8px; }
+            .header-left-logo { flex: 0 0 auto; width: 100%; display: flex; justify-content: center; align-items: center; }
+            .header-logo-large { width: 85px; height: 85px; margin: 0 auto; display: block; }
+            .header-divider { width: 80% !important; height: 1.5px !important; margin: 0 auto !important; background: linear-gradient(90deg, transparent 0%, #d4af37 15%, #d4af37 85%, transparent 100%) !important; }
+            .header-right-text { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
+            .main-title { font-size: 18px !important; }
+            .sub-title { font-size: 11px !important; }
+            .trainer-title { font-size: 9px !important; }
+            .motto-container { display: flex; justify-content: center; width: 100%; }
+            .editable-motto { text-align: center !important; margin: 0 auto; color: #ffffff !important; font-size: 10px !important; max-width: 100% !important; }
+            .athlete-card { grid-template-columns: 1fr !important; gap: 6px 10px !important; padding: 8px 10px !important; }
+            .card-field { font-size: 12px !important; }
+            .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 6px; }
+            table { min-width: 850px !important; }
+            th, td { padding: 10px 12px !important; font-size: 12.5px !important; }
+            select, input[type="text"], .table-textarea { font-size: 12.5px !important; padding: 6px 8px !important; }
+        }
+
+        /* ==========================================================
+           IMPRESIÓN / PDF
+           ========================================================== */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 6mm 3mm 6mm 3mm !important;
+                background-color: #000000 !important;
+            }
+
+            html, body {
+                background: #000000 !important;
+                color: #ffffff !important;
+                width: 100% !important;
+                height: 100% !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            body { padding: 0 !important; margin: 0 !important; display: block !important; }
+
+            .no-print, .remove-col, .top-navbar, #dashboard-view, .admin-panel, .gym-bg-overlay {
+                display: none !important;
+            }
+
+            #plan-editor-view { display: block !important; }
+            #app-content { display: block !important; position: relative !important; z-index: 2 !important; background-color: transparent !important; }
+            .container { width: 100% !important; max-width: none !important; margin: 0 auto !important; padding: 0 !important; background-color: transparent !important; }
+
+            .header-banner, .athlete-card, .notes-box, .table-responsive, table, th, td, tr:nth-child(even) td, .card-field {
+                background: transparent !important;
+                background-color: transparent !important;
+                border: 1.5px solid #d4af37 !important;
+                box-shadow: none !important;
+            }
+
+            .header-banner { margin-top: 4px !important; }
+            .day-block { page-break-before: auto !important; break-before: auto !important; margin-top: 8px !important; }
+
+            th, td {
+                border: 1.5px solid rgba(212, 175, 55, 0.6) !important;
+                overflow-wrap: break-word !important;
+                word-break: break-word !important;
+                white-space: normal !important;
+                padding: 7px 8px !important;
+                font-size: 11px !important;
+                color: #ffffff !important;
+            }
+
+            th {
+                font-size: 11.5px !important;
+            }
+
+            input, select, textarea, .table-textarea, .editable-textarea, .editable-motto {
+                background: transparent !important;
+                color: #ffffff !important;
+                border: none !important;
+                font-size: 11px !important;
+                resize: none !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                appearance: none !important;
+                -webkit-appearance: none !important;
+            }
+
+            thead { display: table-header-group !important; }
+            tr { page-break-inside: avoid !important; break-inside: avoid !important; }
+            .day-block { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 6px !important; }
+
+            .watermark-bg {
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                width: 500px !important;
+                height: 500px !important;
+                background-image: url('logo.png') !important;
+                background-repeat: no-repeat !important;
+                background-position: center center !important;
+                background-size: contain !important;
+                opacity: 0.22 !important;
+                z-index: 0 !important;
+                pointer-events: none !important;
+            }
+
+            .page-footer-container {
+                display: flex !important;
+                position: relative !important;
+                margin-top: 10px !important;
+                margin-bottom: 2px !important;
+                padding-bottom: 2px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                background-color: transparent !important;
+                z-index: 3 !important;
+            }
+        }
+    </style>
+</head>
+<body onclick="closeAllDropdowns(event)">
+
+    <!-- FONDO DE GYM Y MARCA DE AGUA GENERAL -->
+    <div class="gym-bg-overlay"></div>
+    <div class="watermark-bg"></div>
+
+    <!-- PANTALLA DE LOGIN -->
+    <div id="login-screen">
+        <div class="login-card">
+            <img src="logo.png" alt="SF Logo" class="login-logo" onerror="this.style.display='none'">
+            <div class="login-title">SERGIO FERNANDEZ</div>
+            <div class="login-subtitle">PERSONAL TRAINER</div>
+            <div class="login-header-action">INICIAR SESIÓN</div>
+
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label for="email">Correo Electrónico:</label>
+                    <input type="email" id="email" placeholder="ejemplo@correo.com" required autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+                </div>
+                <button type="submit" class="btn-login" id="btn-login-text">Ingresar al Sistema</button>
+                <div id="login-error" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div id="app-content">
+        <div class="container">
+
+            <!-- BARRA SUPERIOR FIJA CON MENÚ HAMBURGUESA -->
+            <div class="top-navbar no-print">
+                <div class="navbar-brand-wrapper">
+                    <img src="logo.png" alt="Logo" class="navbar-logo-img" onerror="this.style.display='none'">
+                    <div class="navbar-brand-text">SF FITNESS SYSTEM</div>
+                </div>
+                <div class="hamburger-menu-container">
+                    <button class="hamburger-btn" onclick="toggleHamburgerMenu(event)">
+                        ☰
+                    </button>
+                    <div id="hamburger-dropdown" class="dropdown-menu-content">
+                        <button class="dropdown-item" onclick="openUserManagementPanel()"><span class="emoji-red">👥</span> Gestionar Usuarios</button>
+                        <button class="dropdown-item" onclick="openExercisePanel()"><span class="emoji-red">🏋️</span> Banco de Ejercicios</button>
+                        <button class="dropdown-item" onclick="openPasswordModal()"><span class="emoji-red">🔑</span> Cambiar Contraseña</button>
+                        <button class="dropdown-item" onclick="logout()"><span class="emoji-red">🚪</span> Cerrar Sesión</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- VISTA 1: DASHBOARD / INICIO                                -->
+            <!-- ========================================================== -->
+            <div id="dashboard-view">
+                
+                <div class="dashboard-hero">
+                    <img src="logo.png" alt="SF Logo" class="hero-logo" onerror="this.style.display='none'">
+                    <h1>Sergio Fernandez</h1>
+                    <p>Personal Trainer • Panel de Gestión de Alumnos</p>
+                </div>
+
+                <div class="generate-plan-card">
+                    <h2>Generar Plan de Entrenamiento</h2>
+                    <p>Crea, edita y diseña rutinas profesionales a medida para tus alumnos con sincronización en la nube.</p>
+                    <button class="btn-gold-large" onclick="openNewPlanEditor()">
+                        <span class="emoji-red">📋</span> Crear / Nuevo Plan de Entrenamiento
+                    </button>
+                </div>
+
+                <!-- PANEL 1: GESTIÓN DE USUARIOS -->
+                <div id="user-management-panel" class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h3>Gestión de Usuarios y Roles</h3>
+                        <button class="close-panel-btn" onclick="hideAllPanels()">✕</button>
+                    </div>
+                    <div class="admin-form" id="create-user-form-container">
+                        <input type="email" id="admin-new-user-email" placeholder="Correo del nuevo usuario">
+                        <input type="password" id="admin-new-user-pass" placeholder="Contraseña (mín 6 chars)">
+                        <select id="admin-new-user-role">
+                            <option value="usuario basico">Usuario Básico</option>
+                            <option value="usuario plus">Usuario Plus</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                        <button class="btn btn-sm" onclick="createNewUserByAdmin()">Crear Cuenta</button>
+                    </div>
+                    <div class="user-list-container" id="admin-users-list-container">
+                        <p style="font-size: 11px; color: #888; text-align: center;">Cargando lista de usuarios...</p>
+                    </div>
+                </div>
+
+                <!-- PANEL 2: BANCO DE EJERCICIOS -->
+                <div id="exercise-database-panel" class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h3>Banco de Datos de Ejercicios y Zonas</h3>
+                        <button class="close-panel-btn" onclick="hideAllPanels()">✕</button>
+                    </div>
+                    <div class="admin-form" style="flex-direction: column; align-items: stretch; gap: 6px;">
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <input type="text" id="admin-new-group-input" placeholder="Nueva Zona (Ej: Abdomen)">
+                            <button class="btn btn-sm" onclick="addNewMuscleGroup()">+ Agregar Zona</button>
+                        </div>
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
+                            <select id="admin-group-target-select" style="flex: 1 1 200px;"></select>
+                            <input type="text" id="admin-new-exercise-input" placeholder="Nombre del ejercicio" style="flex: 2 1 200px;">
+                            <button class="btn btn-sm" onclick="addNewExerciseToDb()">Guardar Ejercicio</button>
+                        </div>
+                    </div>
+                    <div class="exercise-db-view" id="admin-exercise-db-container"></div>
+                </div>
+
+                <!-- PANEL 3: CAMBIAR CONTRASEÑA -->
+                <div id="password-change-panel" class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h3>Seguridad • Cambiar Contraseña</h3>
+                        <button class="close-panel-btn" onclick="hideAllPanels()">✕</button>
+                    </div>
+                    <div class="password-card-grid">
+                        <div class="password-input-wrapper">
+                            <input type="password" id="current-pass-input" placeholder="Contraseña Actual" required>
+                        </div>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="new-pass-input" placeholder="Nueva Contraseña (mínimo 6 caracteres)" required>
+                        </div>
+                        <button class="btn-gold-action" onclick="updateUserPassword()">Actualizar Contraseña</button>
+                    </div>
+                </div>
+
+                <!-- REGISTROS DE ALUMNOS Y PLANES -->
+                <div class="students-section-title">Alumnos y Planes Guardados en la Nube</div>
+                <div class="students-grid" id="students-grid-container">
+                    <p style="font-size: 11px; color: #888;">Cargando lista de alumnos...</p>
+                </div>
+
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- VISTA 2: EDITOR DEL PLAN DE ENTRENAMIENTO                  -->
+            <!-- ========================================================== -->
+            <div id="plan-editor-view">
+                
+                <div class="quick-actions-bar no-print" style="display: flex; justify-content: space-between; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="backToDashboard()"><span class="emoji-red">⬅️</span> Volver al Inicio</button>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn" onclick="saveCurrentPlanToCloud()"><span class="emoji-red">☁️</span> Guardar Plan</button>
+                        <button class="btn" id="add-day-btn" onclick="addDayBlock()">+ Día</button>
+                        <button class="btn" onclick="triggerPrint()"><span class="emoji-red">🖨️</span> Imprimir</button>
+                    </div>
+                </div>
+
+                <div class="header-banner">
+                    <div class="header-main-layout">
+                        <div class="header-left-logo">
+                            <img src="logo.png" alt="SF Logo" class="header-logo-large" onerror="this.style.display='none'">
+                        </div>
+                        <div class="header-divider"></div>
+                        <div class="header-right-text">
+                            <div class="main-title">PLAN DE ENTRENAMIENTO</div>
+                            <div class="sub-title">SERGIO FERNANDEZ</div>
+                            <div class="trainer-title">DISCIPLINA • CONSTANCIA • RESULTADOS</div>
+                            <div class="motto-container">
+                                <textarea class="editable-motto" rows="1" oninput="autoExpandTextarea(this)" placeholder="Escribe aquí tu frase o nota...">Escribe aquí tu frase o nota personalizada...</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="athlete-card">
+                    <div class="card-field">
+                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        <label>Nombre:</label>
+                        <input type="text" id="athlete-name" value="Sergio Fernandez">
+                    </div>
+                    <div class="card-field">
+                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 6.29 3.43 4.86 2 3.43 3.43 2 4.86 3.43 6.29 2 7.71 3.43 9.14 2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22 14.86 20.57 16.29 22 17.71 20.57 19.14 22 20.57 20.57 22 19.14 20.57 17.71 22 16.29z"/></svg>
+                        <label>Objetivo:</label>
+                        <input type="text" id="athlete-goal" value="Hipertrofia / Recomposición">
+                    </div>
+                    <div class="card-field">
+                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/></svg>
+                        <label>Fecha inicio:</label>
+                        <input type="text" id="athlete-start" value="10/08/2026">
+                    </div>
+                    <div class="card-field">
+                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                        <label>Nivel:</label>
+                        <input type="text" id="athlete-level" value="Intermedio - Avanzado">
+                    </div>
+                    <div class="card-field">
+                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+                        <label>Fecha fin:</label>
+                        <input type="text" id="athlete-end" value="21/09/2026">
+                    </div>
+                    <div class="card-field">
+                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                        <label>Días / sem:</label>
+                        <input type="text" id="athlete-days" value="4 Días">
+                    </div>
+                </div>
+
+                <div id="days-container"></div>
+
+                <div class="notes-box">
+                    <strong>Instrucciones Generales & Recomendaciones:</strong>
+                    <textarea class="editable-textarea" id="general-notes" oninput="autoExpandTextarea(this)" placeholder="Escribe aquí tus instrucciones...">Mantener una correcta hidratación durante las sesiones y respetar los tiempos de descanso indicados entre series.</textarea>
+                </div>
+                
+                <div class="page-footer-container">
+                    <img src="logo.png" alt="SF Logo" class="bottom-logo-small" onerror="this.style.display='none'">
+                    <div class="footer">
+                        Plan de entrenamiento diseñado por Sergio Fernandez • Todos los derechos reservados
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MÓDULOS DE FIREBASE V10 Y LÓGICA -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVl571DIVjEC3psCATBWiRpFDMKqeUGrw",
+            authDomain: "sf-fitness-84bcc.firebaseapp.com",
+            projectId: "sf-fitness-84bcc",
+            storageBucket: "sf-fitness-84bcc.firebasestorage.app",
+            messagingSenderId: "630619356302",
+            appId: "1:630619356302:web:23e231feaccf2e1decdddf",
+            measurementId: "G-KFD6PL76KK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUserData = null;
+        let inactivityTimer = null;
+        const INACTIVITY_LIMIT = 30 * 60 * 1000;
+
+        const DEFAULT_EXERCISES = {
+            "Cuádriceps": ["Sentadillas con barra libre", "Sentadillas en Smith", "Prensa 45°", "Extensora de cuádriceps", "Búlgaras"],
+            "Isquiosurales / Femorales": ["Stiff", "Peso muerto con barra", "Mesa flexora", "Silla flexora"],
+            "Glúteos": ["Hip thrust con barra", "Abducción en máquina", "Patadas en polea baja"],
+            "Espalda": ["Jalón frontal agarre prono", "Remo bajo agarre neutro", "Remo con barra", "Pullover en polea"],
+            "Pectorales": ["Press banco plano", "Press banco inclinado", "Aperturas en polea cruzada"],
+            "Hombros": ["Press militar", "Vuelos laterales", "Face pull"],
+            "Bíceps": ["Curl de bíceps martillo", "Curl en banco Scott", "Curl supino con mancuernas"],
+            "Tríceps": ["Extensión en polea alta", "Copa tríceps", "Press francés"]
+        };
+
+        window.getExerciseDatabase = async function() {
+            try {
+                const docRef = doc(db, "config", "exercise_db");
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    return docSnap.data().exercises;
+                } else {
+                    await setDoc(docRef, { exercises: DEFAULT_EXERCISES });
+                    return DEFAULT_EXERCISES;
+                }
+            } catch (error) {
+                return DEFAULT_EXERCISES;
+            }
+        };
+
+        window.saveExerciseDatabase = async function(exerciseDb) {
+            try {
+                const docRef = doc(db, "config", "exercise_db");
+                await setDoc(docRef, { exercises: exerciseDb });
+            } catch (error) {
+                alert("Error al guardar en la nube: " + error.message);
+            }
+        };
+
+        window.loadStudentsList = async function() {
+            const container = document.getElementById('students-grid-container');
+            if (!container) return;
+            container.innerHTML = '<p style="font-size: 11px; color: #888;">Cargando alumnos...</p>';
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "student_plans"));
+                container.innerHTML = '';
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<p style="font-size: 11px; color: #888;">No hay alumnos con planes guardados aún. Haz clic en "Crear / Nuevo Plan de Entrenamiento" para empezar.</p>';
+                    return;
+                }
+
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const studentId = docSnap.id;
+                    const updatedAt = data.updatedAt ? (data.updatedAt.toDate ? data.updatedAt.toDate().toLocaleDateString() : new Date(data.updatedAt).toLocaleDateString()) : 'Reciente';
+
+                    const card = document.createElement('div');
+                    card.className = 'student-card';
+                    card.innerHTML = `
+                        <div class="student-info">
+                            <h4>👤 ${data.name || 'Sin Nombre'}</h4>
+                            <p><strong>Objetivo:</strong> ${data.goal || 'General'}</p>
+                            <p><strong>Actualizado:</strong> ${updatedAt}</p>
+                        </div>
+                        <div class="student-actions">
+                            <button class="btn btn-sm" onclick="window.loadStudentPlan('${studentId}')">Abrir / Editar</button>
+                            <button class="btn btn-danger btn-sm" onclick="window.deleteStudentPlan('${studentId}')">Eliminar</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                container.innerHTML = '<p style="font-size: 11px; color: #e53e3e;">Error al cargar los alumnos.</p>';
+            }
+        };
+
+        window.saveCurrentPlanToCloud = async function() {
+            const nameInput = document.getElementById('athlete-name').value.trim();
+            if (!nameInput) {
+                alert("Por favor ingresa el nombre del alumno.");
+                return;
+            }
+
+            const goal = document.getElementById('athlete-goal').value;
+            const startDate = document.getElementById('athlete-start').value;
+            const level = document.getElementById('athlete-level').value;
+            const endDate = document.getElementById('athlete-end').value;
+            const daysCount = document.getElementById('athlete-days').value;
+            const motto = document.querySelector('.editable-motto').value;
+            const notes = document.getElementById('general-notes').value;
+
+            const daysData = [];
+            const dayBlocks = document.querySelectorAll('.day-block');
+            dayBlocks.forEach(block => {
+                const dayId = block.id;
+                const groupSelect = document.getElementById(`group-select-${dayId}`);
+                const muscleGroup = groupSelect ? groupSelect.value : '';
+                
+                const rows = block.querySelectorAll('tbody tr');
+                const exercises = [];
+                rows.forEach(row => {
+                    const exSelect = row.querySelector('select[id^="ex-select-"]');
+                    const inputs = row.querySelectorAll('input');
+                    const textarea = row.querySelector('.table-textarea');
+
+                    exercises.push({
+                        exercise: exSelect ? exSelect.value : '',
+                        sets: inputs[0] ? inputs[0].value : '',
+                        intensity: inputs[1] ? inputs[1].value : '',
+                        cadence: inputs[2] ? inputs[2].value : '',
+                        notes: textarea ? textarea.value : ''
+                    });
+                });
+
+                daysData.push({ muscleGroup, exercises });
+            });
+
+            const planPayload = {
+                name: nameInput,
+                goal,
+                startDate,
+                level,
+                endDate,
+                daysCount,
+                motto,
+                notes,
+                daysData,
+                updatedAt: serverTimestamp()
+            };
+
+            try {
+                const docId = nameInput.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                await setDoc(doc(db, "student_plans", docId), planPayload);
+                alert(`¡Plan de [${nameInput}] guardado con éxito en la nube!`);
+                window.loadStudentsList();
+            } catch (error) {
+                alert("Error al guardar el plan: " + error.message);
+            }
+        };
+
+        window.loadStudentPlan = async function(studentId) {
+            try {
+                const docSnap = await getDoc(doc(db, "student_plans", studentId));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    document.getElementById('athlete-name').value = data.name || '';
+                    document.getElementById('athlete-goal').value = data.goal || '';
+                    document.getElementById('athlete-start').value = data.startDate || '';
+                    document.getElementById('athlete-level').value = data.level || '';
+                    document.getElementById('athlete-end').value = data.endDate || '';
+                    document.getElementById('athlete-days').value = data.daysCount || '';
+                    document.querySelector('.editable-motto').value = data.motto || '';
+                    document.getElementById('general-notes').value = data.notes || '';
+
+                    document.getElementById('days-container').innerHTML = '';
+                    dayCounter = 0;
+
+                    if (data.daysData && data.daysData.length > 0) {
+                        for (let dInfo of data.daysData) {
+                            await addDayBlock(dInfo.muscleGroup);
+                            const currentDayId = `day-${dayCounter}`;
+                            const tbody = document.getElementById(`tbody-${currentDayId}`);
+                            if (tbody && dInfo.exercises) {
+                                tbody.innerHTML = '';
+                                for (let exItem of dInfo.exercises) {
+                                    await addExerciseRowSpecific(currentDayId, exItem);
+                                }
+                            }
+                        }
+                    }
+
+                    openPlanEditor();
+                }
+            } catch (error) {
+                alert("Error al cargar el plan del alumno: " + error.message);
+            }
+        };
+
+        window.deleteStudentPlan = async function(studentId) {
+            if (confirm("¿Estás seguro de eliminar este plan y registro de alumno?")) {
+                try {
+                    await deleteDoc(doc(db, "student_plans", studentId));
+                    window.loadStudentsList();
+                } catch (error) {
+                    alert("Error al eliminar: " + error.message);
+                }
+            }
+        };
+
+        window.loadUsersListAdmin = async function() {
+            const container = document.getElementById('admin-users-list-container');
+            if (!container) return;
+            const snap = await getDocs(collection(db, "users"));
+            container.innerHTML = '';
+            
+            snap.forEach(d => {
+                const dat = d.data();
+                const uid = d.id;
+                let roleSelectorHTML = '';
+
+                if (currentUserData && currentUserData.role === 'admin') {
+                    roleSelectorHTML = `
+                        <select class="user-role-select" onchange="window.updateUserRole('${uid}', this.value)">
+                            <option value="usuario basico" ${dat.role === 'usuario basico' ? 'selected' : ''}>Usuario Básico</option>
+                            <option value="usuario plus" ${dat.role === 'usuario plus' ? 'selected' : ''}>Usuario Plus</option>
+                            <option value="admin" ${dat.role === 'admin' ? 'selected' : ''}>Admin</option>
+                        </select>
+                        <button class="btn btn-danger btn-sm" onclick="window.deleteSystemUser('${uid}')">✕</button>
+                    `;
+                } else {
+                    roleSelectorHTML = `<span style="color: #d4af37; font-weight: bold; text-transform: uppercase;">${dat.role}</span>`;
+                }
+
+                container.innerHTML += `
+                    <div class="user-item-row">
+                        <div><strong>${dat.email}</strong></div>
+                        <div style="display: flex; gap: 6px; align-items: center;">${roleSelectorHTML}</div>
+                    </div>
+                `;
+            });
+        };
+
+        window.updateUserRole = async function(uid, newRole) {
+            if (!currentUserData || currentUserData.role !== 'admin') {
+                alert("Acceso denegado: Solo los administradores pueden modificar roles.");
+                window.loadUsersListAdmin();
+                return;
+            }
+            try {
+                await updateDoc(doc(db, "users", uid), { role: newRole });
+                alert("Rol actualizado correctamente.");
+            } catch (error) {
+                alert("Error al actualizar rol: " + error.message);
+            }
+        };
+
+        window.createNewUserByAdmin = async function() {
+            if (!currentUserData || currentUserData.role !== 'admin') {
+                alert("Acceso denegado.");
+                return;
+            }
+            const email = document.getElementById('admin-new-user-email').value.trim();
+            const pass = document.getElementById('admin-new-user-pass').value.trim();
+            const role = document.getElementById('admin-new-user-role').value;
+
+            if (!email || !pass || pass.length < 6) {
+                alert("Ingresa un correo válido y contraseña de al menos 6 caracteres.");
+                return;
+            }
+
+            try {
+                const res = await createUserWithEmailAndPassword(auth, email, pass);
+                await setDoc(doc(db, "users", res.user.uid), { email, role, createdAt: new Date() });
+                alert(`Usuario [${email}] creado con éxito.`);
+                document.getElementById('admin-new-user-email').value = '';
+                document.getElementById('admin-new-user-pass').value = '';
+                window.loadUsersListAdmin();
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        };
+
+        window.deleteSystemUser = async function(uid) {
+            if (!currentUserData || currentUserData.role !== 'admin') return;
+            if (confirm("¿Estás seguro de eliminar este usuario del sistema?")) {
+                try {
+                    await deleteDoc(doc(db, "users", uid));
+                    window.loadUsersListAdmin();
+                } catch (error) {
+                    alert("Error al eliminar registro: " + error.message);
+                }
+            }
+        };
+
+        window.updateUserPassword = async function() {
+            const currentPass = document.getElementById('current-pass-input').value;
+            const newPass = document.getElementById('new-pass-input').value;
+
+            if (!currentPass || !newPass || newPass.length < 6) {
+                alert("Completa ambos campos. La nueva contraseña debe tener al menos 6 caracteres.");
+                return;
+            }
+
+            const user = auth.currentUser;
+            if (!user) return;
+
+            try {
+                const credential = EmailAuthProvider.credential(user.email, currentPass);
+                await reauthenticateWithCredential(user, credential);
+                await updatePassword(user, newPass);
+                alert("¡Contraseña actualizada con éxito!");
+                document.getElementById('current-pass-input').value = '';
+                document.getElementById('new-pass-input').value = '';
+                hideAllPanels();
+            } catch (error) {
+                alert("Error: Contraseña actual incorrecta o fallo de autenticación.");
+            }
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userRef = doc(db, "users", user.uid);
+                const userDoc = await getDoc(userRef);
+                const loginTimestamp = new Date();
+
+                if (userDoc.exists()) {
+                    currentUserData = userDoc.data();
+                    await updateDoc(userRef, { lastLogin: loginTimestamp });
+                } else {
+                    currentUserData = { role: 'admin', email: user.email };
+                    await setDoc(userRef, { email: user.email, role: 'admin', createdAt: loginTimestamp });
+                }
+
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-content').style.display = 'flex';
+
+                if (currentUserData.role !== 'admin') {
+                    const createUserForm = document.getElementById('create-user-form-container');
+                    if (createUserForm) createUserForm.style.display = 'none';
+                }
+
+                startInactivityTimer();
+                window.loadStudentsList();
+            } else {
+                document.getElementById('app-content').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'flex';
+            }
+        });
+
+        window.handleLogin = async (event) => {
+            event.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorMsg = document.getElementById('login-error');
+            const btnLogin = document.getElementById('btn-login-text');
+
+            errorMsg.style.display = 'none';
+            btnLogin.innerText = 'Cargando...';
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                errorMsg.textContent = "Error de acceso: Correo o contraseña inválidos.";
+                errorMsg.style.display = 'block';
+            } finally {
+                btnLogin.innerText = 'Ingresar al Sistema';
+            }
+        };
+
+        window.logout = () => {
+            clearTimeout(inactivityTimer);
+            signOut(auth);
+        };
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                alert("Sesión expirada por inactividad.");
+                window.logout();
+            }, INACTIVITY_LIMIT);
+        }
+
+        function startInactivityTimer() {
+            resetInactivityTimer();
+            window.onmousemove = resetInactivityTimer;
+            window.onkeydown = resetInactivityTimer;
+        }
+    </script>
+
+    <!-- INTERFAZ Y NAVEGACIÓN -->
+    <script>
+        window.toggleHamburgerMenu = function(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('hamburger-dropdown');
+            dropdown.classList.toggle('show');
+        };
+
+        window.closeAllDropdowns = function(e) {
+            const dropdown = document.getElementById('hamburger-dropdown');
+            if (dropdown && !e.target.closest('.hamburger-menu-container')) {
+                dropdown.classList.remove('show');
+            }
+        };
+
+        window.hideAllPanels = function() {
+            document.getElementById('user-management-panel').style.display = 'none';
+            document.getElementById('exercise-database-panel').style.display = 'none';
+            document.getElementById('password-change-panel').style.display = 'none';
+            document.getElementById('hamburger-dropdown').classList.remove('show');
+        }
+
+        window.openUserManagementPanel = async function() {
+            hideAllPanels();
+            const panel = document.getElementById('user-management-panel');
+            panel.style.display = 'block';
+            if (window.loadUsersListAdmin) await window.loadUsersListAdmin();
+        };
+
+        window.openExercisePanel = async function() {
+            hideAllPanels();
+            const panel = document.getElementById('exercise-database-panel');
+            panel.style.display = 'block';
+            await populateAdminGroupSelect();
+            await renderAdminExerciseView();
+        };
+
+        window.openPasswordModal = function() {
+            hideAllPanels();
+            document.getElementById('password-change-panel').style.display = 'block';
+        };
+
+        window.openNewPlanEditor = function() {
+            hideAllPanels();
+            document.getElementById('dashboard-view').style.display = 'none';
+            document.getElementById('plan-editor-view').style.display = 'block';
+            
+            document.getElementById('athlete-name').value = "Nuevo Alumno";
+            document.getElementById('athlete-goal').value = "Hipertrofia / Recomposición";
+            document.getElementById('athlete-start').value = new Date().toLocaleDateString();
+            document.getElementById('athlete-level').value = "Intermedio - Avanzado";
+            document.getElementById('athlete-end').value = "";
+            document.getElementById('athlete-days').value = "4 Días";
+            document.querySelector('.editable-motto').value = "DISCIPLINA • CONSTANCIA • RESULTADOS";
+            document.getElementById('general-notes').value = "Mantener una correcta hidratación durante las sesiones y respetar los tiempos de descanso indicados entre series.";
+
+            document.getElementById('days-container').innerHTML = '';
+            dayCounter = 0;
+            addDayBlock("Cuádriceps");
+            addDayBlock("Espalda");
+        };
+
+        window.openPlanEditor = function() {
+            hideAllPanels();
+            document.getElementById('dashboard-view').style.display = 'none';
+            document.getElementById('plan-editor-view').style.display = 'block';
+        };
+
+        window.backToDashboard = function() {
+            hideAllPanels();
+            document.getElementById('plan-editor-view').style.display = 'none';
+            document.getElementById('dashboard-view').style.display = 'block';
+            window.loadStudentsList();
+        };
+
+        async function populateAdminGroupSelect() {
+            const sel = document.getElementById('admin-group-target-select');
+            if (!sel) return;
+            sel.innerHTML = '';
+            const db = await window.getExerciseDatabase();
+            for (let g in db) {
+                sel.innerHTML += `<option value="${g}">${g}</option>`;
+            }
+        }
+
+        async function addNewMuscleGroup() {
+            const inp = document.getElementById('admin-new-group-input');
+            const val = inp.value.trim();
+            if (!val) return;
+            const db = await window.getExerciseDatabase();
+            if (!db[val]) {
+                db[val] = [];
+                await window.saveExerciseDatabase(db);
+                inp.value = '';
+                await populateAdminGroupSelect();
+                await renderAdminExerciseView();
+            }
+        }
+
+        async function renderAdminExerciseView() {
+            const container = document.getElementById('admin-exercise-db-container');
+            if (!container) return;
+            container.innerHTML = '';
+            const db = await window.getExerciseDatabase();
+            for (let g in db) {
+                let tags = '';
+                db[g].forEach((ex, idx) => {
+                    tags += `<span class="ex-tag">${ex} <span class="ex-tag-remove" onclick="removeExFromAdmin('${g}', ${idx})">✕</span></span>`;
+                });
+                container.innerHTML += `<div class="ex-group-item"><div class="ex-group-title">${g}</div><div class="ex-tags-container">${tags}</div></div>`;
+            }
+        }
+
+        async function addNewExerciseToDb() {
+            const sel = document.getElementById('admin-group-target-select');
+            const inp = document.getElementById('admin-new-exercise-input');
+            const g = sel ? sel.value : '';
+            const ex = inp ? inp.value.trim() : '';
+            if (!g || !ex) return;
+            const db = await window.getExerciseDatabase();
+            if (!db[g].includes(ex)) {
+                db[g].push(ex);
+                await window.saveExerciseDatabase(db);
+                inp.value = '';
+                await renderAdminExerciseView();
+            }
+        }
+
+        async function removeExFromAdmin(group, idx) {
+            const db = await window.getExerciseDatabase();
+            db[group].splice(idx, 1);
+            await window.saveExerciseDatabase(db);
+            await renderAdminExerciseView();
+        }
+
+        let dayCounter = 0;
+
+        window.addDayBlock = async function(initialGroup = "Cuádriceps") {
+            dayCounter++;
+            const container = document.getElementById('days-container');
+            const dayId = `day-${dayCounter}`;
+
+            const dayHTML = `
+                <div class="day-block" id="${dayId}" data-day-index="${dayCounter}">
+                    <div class="section-header">
+                        <div class="header-title-group">
+                            <span class="day-prefix" id="label-${dayId}">DÍA ${dayCounter}:</span>
+                            <select class="group-select-inline" id="group-select-${dayId}" onchange="updateAllRowsInDay('${dayId}')"></select>
+                        </div>
+                        <button class="btn btn-danger btn-sm no-print" onclick="removeDayBlock('${dayId}')">Eliminar Día</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%;">Ejercicio</th>
+                                    <th style="width: 10%;">Series</th>
+                                    <th style="width: 20%;">Intensidad</th>
+                                    <th style="width: 12%;">Cadencia</th>
+                                    <th style="width: 23%;">Notas Técnicas</th>
+                                    <th class="remove-col" style="width: 5%;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-${dayId}"></tbody>
+                        </table>
+                    </div>
+                    <div class="no-print" style="text-align: left; margin-top: 4px;">
+                        <button class="btn btn-sm" onclick="addExerciseRow('${dayId}')">+ Agregar Ejercicio</button>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', dayHTML);
+            await renderMuscleGroupDropdowns(dayId, initialGroup);
+
+            for (let i = 0; i < 4; i++) {
+                await addExerciseRow(dayId);
+            }
+        }
+
+        window.removeDayBlock = function(dayId) {
+            const el = document.getElementById(dayId);
+            if (el) {
+                el.remove();
+                reorderDayBlocks();
+            }
+        }
+
+        function reorderDayBlocks() {
+            const dayBlocks = document.querySelectorAll('.day-block');
+            dayCounter = 0;
+            dayBlocks.forEach((block, index) => {
+                const newIndex = index + 1;
+                dayCounter = newIndex;
+                const oldId = block.id;
+                const newId = `day-${newIndex}`;
+
+                block.id = newId;
+                block.setAttribute('data-day-index', newIndex);
+
+                const prefixSpan = block.querySelector('.day-prefix');
+                if (prefixSpan) {
+                    prefixSpan.id = `label-${newId}`;
+                    prefixSpan.textContent = `DÍA ${newIndex}:`;
+                }
+
+                const groupSelect = block.querySelector('.group-select-inline');
+                if (groupSelect) {
+                    groupSelect.id = `group-select-${newId}`;
+                    groupSelect.setAttribute('onchange', `updateAllRowsInDay('${newId}')`);
+                }
+
+                const tbody = block.querySelector('tbody');
+                if (tbody) {
+                    tbody.id = `tbody-${newId}`;
+                }
+
+                const deleteBtn = block.querySelector('.btn-danger');
+                if (deleteBtn) {
+                    deleteBtn.setAttribute('onclick', `removeDayBlock('${newId}')`);
+                }
+
+                const addExBtn = block.querySelector('.no-print button');
+                if (addExBtn) {
+                    addExBtn.setAttribute('onclick', `addExerciseRow('${newId}')`);
+                }
+            });
+        }
+
+        async function renderMuscleGroupDropdowns(dayId, selectedValue = null) {
+            const groupSelect = document.getElementById(`group-select-${dayId}`);
+            if (!groupSelect) return;
+
+            const db = await window.getExerciseDatabase();
+            const keys = Object.keys(db);
+            if (keys.length === 0) return;
+
+            const currentVal = selectedValue && db[selectedValue] ? selectedValue : (groupSelect.value && db[groupSelect.value] ? groupSelect.value : keys[0]);
+            groupSelect.innerHTML = '';
+
+            for (let group in db) {
+                const option = document.createElement('option');
+                option.value = group;
+                option.textContent = group;
+                if (group === currentVal) option.selected = true;
+                groupSelect.appendChild(option);
+            }
+        }
+
+        window.addExerciseRow = async function(dayId) {
+            await addExerciseRowSpecific(dayId, { exercise: '', sets: '4', intensity: '10-12 REPS / RIR 2', cadence: '3-0-1-0', notes: 'Controlar excéntrica' });
+        }
+
+        async function addExerciseRowSpecific(dayId, data) {
+            const tbody = document.getElementById(`tbody-${dayId}`);
+            if (!tbody) return;
+            const rowId = `row-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+            const rowHTML = `
+                <tr id="${rowId}">
+                    <td><select id="ex-select-${rowId}"></select></td>
+                    <td><input type="text" value="${data.sets}" style="text-align: center;"></td>
+                    <td><input type="text" value="${data.intensity}" style="text-align: center;"></td>
+                    <td><input type="text" value="${data.cadence}" style="text-align: center;"></td>
+                    <td><textarea class="table-textarea" rows="1" oninput="autoExpandTextarea(this)">${data.notes}</textarea></td>
+                    <td class="remove-col" style="text-align: center;">
+                        <button class="btn btn-danger btn-sm" onclick="removeElement('${rowId}')">✕</button>
+                    </td>
+                </tr>
+            `;
+
+            tbody.insertAdjacentHTML('beforeend', rowHTML);
+            const groupSelect = document.getElementById(`group-select-${dayId}`);
+            const currentGroup = groupSelect ? groupSelect.value : 'Cuádriceps';
+            await populateExerciseDropdown(rowId, currentGroup, data.exercise);
+        }
+
+        async function populateExerciseDropdown(rowId, selectedGroup, selectVal = '') {
+            const exerciseSelect = document.getElementById(`ex-select-${rowId}`);
+            if (!exerciseSelect) return;
+
+            exerciseSelect.innerHTML = '';
+            const db = await window.getExerciseDatabase();
+
+            const targetGroup = db[selectedGroup] ? selectedGroup : Object.keys(db)[0];
+            const exercisesList = db[targetGroup] || [];
+
+            if (exercisesList.length > 0) {
+                exercisesList.forEach(exercise => {
+                    const option = document.createElement('option');
+                    option.value = exercise;
+                    option.textContent = exercise;
+                    if (exercise === selectVal) option.selected = true;
+                    exerciseSelect.appendChild(option);
+                });
+            } else {
+                exerciseSelect.innerHTML = '<option value="">-- Sin ejercicios --</option>';
+            }
+        }
+
+        window.updateAllRowsInDay = async function(dayId) {
+            const currentGroup = document.getElementById(`group-select-${dayId}`).value;
+            const tbody = document.getElementById(`tbody-${dayId}`);
+            if (!tbody) return;
+            const rowSelects = tbody.querySelectorAll('select[id^="ex-select-"]');
+            for (let select of rowSelects) {
+                const rowId = select.id.replace('ex-select-', '');
+                await populateExerciseDropdown(rowId, currentGroup);
+            }
+        }
+
+        window.removeElement = function(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        window.autoExpandTextarea = function(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        }
+
+        window.triggerPrint = function() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
