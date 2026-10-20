@@ -1212,6 +1212,118 @@
                 z-index: 3 !important;
             }
         }
+
+        /* ==========================================================
+           ANIMACIONES Y MICROINTERACCIONES (no cambian el formato)
+           ========================================================== */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+        @keyframes dropDown { from { opacity: 0; transform: translateY(-8px) scale(0.98); } to { opacity: 1; transform: none; } }
+        @keyframes goldGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(212,175,55,0.35)); }
+            50% { filter: drop-shadow(0 0 18px rgba(212,175,55,0.8)); }
+        }
+        @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        @keyframes heroGlow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+        @keyframes shineSweep { 0%, 55% { left: -120%; } 100% { left: 140%; } }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+        @keyframes watermarkBreath { 0%, 100% { opacity: 0.16; } 50% { opacity: 0.21; } }
+
+        .watermark-bg { animation: watermarkBreath 9s ease-in-out infinite; }
+
+        .login-card { animation: popIn 0.55s ease backwards; }
+        .login-logo { animation: goldGlow 3.2s ease-in-out infinite; }
+        .error-message { animation: shake 0.4s ease; }
+
+        .top-navbar { animation: fadeIn 0.5s ease backwards; }
+        .dashboard-hero { animation: fadeInUp 0.6s ease backwards; }
+        .dashboard-hero::before { animation: heroGlow 4.5s ease-in-out infinite; }
+        .hero-logo { animation: goldGlow 3.2s ease-in-out infinite, floatLogo 5s ease-in-out infinite; }
+        .generate-plan-card { animation: fadeInUp 0.6s ease 0.1s backwards; }
+        .students-section-title { animation: fadeIn 0.6s ease 0.2s backwards; }
+
+        .btn-gold-large { position: relative; overflow: hidden; }
+        .btn-gold-large::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.38), transparent);
+            transform: skewX(-20deg);
+            animation: shineSweep 3.6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        #dashboard-view, #plan-editor-view { animation: fadeIn 0.35s ease; }
+
+        .student-card { animation: fadeInUp 0.45s ease backwards; }
+        .student-card:nth-child(1) { animation-delay: 0.05s; }
+        .student-card:nth-child(2) { animation-delay: 0.12s; }
+        .student-card:nth-child(3) { animation-delay: 0.19s; }
+        .student-card:nth-child(4) { animation-delay: 0.26s; }
+        .student-card:nth-child(5) { animation-delay: 0.33s; }
+        .student-card:nth-child(6) { animation-delay: 0.40s; }
+        .student-card:nth-child(7) { animation-delay: 0.47s; }
+        .student-card:nth-child(8) { animation-delay: 0.54s; }
+
+        .admin-panel { animation: dropDown 0.3s ease backwards; }
+        .dropdown-menu-content.show { animation: dropDown 0.22s ease backwards; transform-origin: top right; }
+        .dropdown-item:hover { box-shadow: inset 3px 0 0 #d4af37; }
+        .user-item-row { animation: fadeIn 0.3s ease backwards; }
+        .ex-tag { animation: popIn 0.25s ease backwards; }
+
+        .quick-actions-bar { animation: fadeIn 0.4s ease backwards; }
+        .header-banner { animation: fadeInUp 0.5s ease backwards; }
+        .athlete-card { animation: fadeInUp 0.5s ease 0.08s backwards; }
+        .day-block { animation: fadeInUp 0.45s ease backwards; }
+        tbody tr { animation: fadeIn 0.35s ease backwards; }
+        .notes-box { animation: fadeInUp 0.45s ease backwards; }
+
+        .btn, .btn-gold-action, .btn-login, .btn-gold-large, .hamburger-btn, .close-panel-btn {
+            transition: transform 0.15s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(212,175,55,0.25); }
+        .btn:active, .btn-gold-action:active, .btn-login:active, .btn-gold-large:active, .hamburger-btn:active {
+            transform: scale(0.96);
+        }
+        .close-panel-btn:hover { transform: rotate(90deg); }
+
+        .input-group input, .admin-form input, .admin-form select, .card-field input, select, input[type="text"] {
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .input-group input:focus, .admin-form input:focus, .admin-form select:focus,
+        select:focus, input[type="text"]:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+        .card-field input:focus { border-bottom-color: #d4af37; box-shadow: none; }
+
+        .is-removing {
+            opacity: 0 !important;
+            transform: translateX(14px) !important;
+            transition: opacity 0.22s ease, transform 0.22s ease;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media print {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
     </style>
 </head>
 <body onclick="closeAllDropdowns(event)">
@@ -1219,6 +1331,9 @@
     <!-- FONDO DE GYM Y MARCA DE AGUA GENERAL -->
     <div class="gym-bg-overlay"></div>
     <div class="watermark-bg"></div>
+
+    <!-- INPUT OCULTO PARA RESTAURAR RESPALDO -->
+    <input type="file" id="restore-file-input" accept=".json,application/json" style="display:none" onchange="handleRestoreFile(event)">
 
     <!-- PANTALLA DE LOGIN -->
     <div id="login-screen">
@@ -1261,6 +1376,8 @@
                         <button class="dropdown-item" onclick="openUserManagementPanel()"><span class="emoji-red">👥</span> Gestionar Usuarios</button>
                         <button class="dropdown-item" onclick="openExercisePanel()"><span class="emoji-red">🏋️</span> Banco de Ejercicios</button>
                         <button class="dropdown-item" onclick="openPasswordModal()"><span class="emoji-red">🔑</span> Cambiar Contraseña</button>
+                        <button class="dropdown-item" onclick="downloadBackup()"><span class="emoji-red">💾</span> Descargar Respaldo</button>
+                        <button class="dropdown-item" onclick="restoreBackup()"><span class="emoji-red">♻️</span> Restaurar Respaldo</button>
                         <button class="dropdown-item" onclick="logout()"><span class="emoji-red">🚪</span> Cerrar Sesión</button>
                     </div>
                 </div>
@@ -1360,7 +1477,7 @@
                     <button class="btn btn-secondary" onclick="backToDashboard()"><span class="emoji-red">⬅️</span> Volver al Inicio</button>
                     <div style="display: flex; gap: 8px;">
                         <button class="btn" onclick="saveCurrentPlanToCloud()"><span class="emoji-red">☁️</span> Guardar Plan</button>
-                        <button class="btn" id="add-day-btn" onclick="addDayBlock()">+ Día</button>
+                        <button class="btn" id="add-day-btn" onclick="addDayAndScroll()">+ Día</button>
                         <button class="btn" onclick="triggerPrint()"><span class="emoji-red">🖨️</span> Imprimir</button>
                     </div>
                 </div>
@@ -1515,8 +1632,8 @@
                     card.className = 'student-card';
                     card.innerHTML = `
                         <div class="student-info">
-                            <h4>👤 ${data.name || 'Sin Nombre'}</h4>
-                            <p><strong>Objetivo:</strong> ${data.goal || 'General'}</p>
+                            <h4>👤 ${window.escapeHTML(data.name || 'Sin Nombre')}</h4>
+                            <p><strong>Objetivo:</strong> ${window.escapeHTML(data.goal || 'General')}</p>
                             <p><strong>Actualizado:</strong> ${updatedAt}</p>
                         </div>
                         <div class="student-actions">
@@ -1585,6 +1702,9 @@
                 updatedAt: serverTimestamp()
             };
 
+            if (window._savingPlan) return;
+            window._savingPlan = true;
+
             try {
                 const docId = nameInput.toLowerCase().replace(/[^a-z0-9]/g, '_');
                 await setDoc(doc(db, "student_plans", docId), planPayload);
@@ -1592,6 +1712,8 @@
                 window.loadStudentsList();
             } catch (error) {
                 alert("Error al guardar el plan: " + error.message);
+            } finally {
+                window._savingPlan = false;
             }
         };
 
@@ -1666,12 +1788,12 @@
                         <button class="btn btn-danger btn-sm" onclick="window.deleteSystemUser('${uid}')">✕</button>
                     `;
                 } else {
-                    roleSelectorHTML = `<span style="color: #d4af37; font-weight: bold; text-transform: uppercase;">${dat.role}</span>`;
+                    roleSelectorHTML = `<span style="color: #d4af37; font-weight: bold; text-transform: uppercase;">${window.escapeHTML(dat.role)}</span>`;
                 }
 
                 container.innerHTML += `
                     <div class="user-item-row">
-                        <div><strong>${dat.email}</strong></div>
+                        <div><strong>${window.escapeHTML(dat.email)}</strong></div>
                         <div style="display: flex; gap: 6px; align-items: center;">${roleSelectorHTML}</div>
                     </div>
                 `;
@@ -1755,6 +1877,131 @@
             }
         };
 
+        // ==========================================================
+        // RESPALDO: DESCARGAR Y RESTAURAR
+        // ==========================================================
+        function fechaATexto(valor) {
+            return valor && typeof valor.toDate === 'function' ? valor.toDate().toISOString() : valor;
+        }
+
+        window.downloadBackup = async function() {
+            document.getElementById('hamburger-dropdown').classList.remove('show');
+
+            try {
+                const backup = {
+                    app: "SF Fitness System",
+                    version: 1,
+                    createdAt: new Date().toISOString(),
+                    student_plans: {},
+                    exercise_db: null,
+                    users: {}
+                };
+
+                // Planes de alumnos
+                const plansSnap = await getDocs(collection(db, "student_plans"));
+                plansSnap.forEach(d => {
+                    const data = d.data();
+                    data.updatedAt = fechaATexto(data.updatedAt);
+                    backup.student_plans[d.id] = data;
+                });
+
+                // Banco de ejercicios
+                const exSnap = await getDoc(doc(db, "config", "exercise_db"));
+                if (exSnap.exists()) backup.exercise_db = exSnap.data().exercises;
+
+                // Usuarios y roles (solo si eres admin)
+                if (currentUserData && currentUserData.role === 'admin') {
+                    const usersSnap = await getDocs(collection(db, "users"));
+                    usersSnap.forEach(d => {
+                        const u = d.data();
+                        backup.users[d.id] = {
+                            email: u.email,
+                            role: u.role,
+                            createdAt: fechaATexto(u.createdAt),
+                            lastLogin: fechaATexto(u.lastLogin)
+                        };
+                    });
+                }
+
+                // Descargar el archivo
+                const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                const hoy = new Date().toISOString().slice(0, 10);
+                a.href = url;
+                a.download = `respaldo-sf-fitness-${hoy}.json`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+
+                alert(`Respaldo descargado: ${Object.keys(backup.student_plans).length} plan(es) de alumnos.`);
+            } catch (error) {
+                alert("Error al generar el respaldo: " + error.message);
+            }
+        };
+
+        window.restoreBackup = function() {
+            document.getElementById('hamburger-dropdown').classList.remove('show');
+            if (!currentUserData || currentUserData.role !== 'admin') {
+                alert("Acceso denegado: solo los administradores pueden restaurar un respaldo.");
+                return;
+            }
+            const input = document.getElementById('restore-file-input');
+            input.value = '';
+            input.click();
+        };
+
+        window.handleRestoreFile = async function(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const backup = JSON.parse(text);
+
+                if (!backup || backup.app !== "SF Fitness System" || typeof backup.student_plans !== 'object') {
+                    alert("El archivo no es un respaldo válido de SF Fitness System.");
+                    return;
+                }
+
+                const ids = Object.keys(backup.student_plans);
+                const fechaRespaldo = backup.createdAt ? new Date(backup.createdAt).toLocaleString() : 'fecha desconocida';
+                const mensaje = `Vas a restaurar el respaldo del ${fechaRespaldo}:\n\n` +
+                    `• ${ids.length} plan(es) de alumnos\n` +
+                    `• Banco de ejercicios: ${backup.exercise_db ? 'sí' : 'no incluido'}\n\n` +
+                    `Los planes con el mismo nombre se sobrescribirán con la versión del respaldo. ` +
+                    `Los demás planes que hoy existen NO se borran.\n\n¿Continuar?`;
+
+                if (!confirm(mensaje)) return;
+
+                let restaurados = 0;
+                for (const id of ids) {
+                    if (!/^[A-Za-z0-9_-]+$/.test(id)) continue;
+                    const data = { ...backup.student_plans[id] };
+                    if (typeof data.updatedAt === 'string') {
+                        const f = new Date(data.updatedAt);
+                        data.updatedAt = isNaN(f.getTime()) ? serverTimestamp() : f;
+                    } else if (!data.updatedAt) {
+                        data.updatedAt = serverTimestamp();
+                    }
+                    await setDoc(doc(db, "student_plans", id), data);
+                    restaurados++;
+                }
+
+                if (backup.exercise_db && typeof backup.exercise_db === 'object') {
+                    await setDoc(doc(db, "config", "exercise_db"), { exercises: backup.exercise_db });
+                }
+
+                alert(`Respaldo restaurado: ${restaurados} plan(es) de alumnos recuperados.`);
+                window.loadStudentsList();
+            } catch (error) {
+                alert("Error al restaurar el respaldo: " + error.message);
+            } finally {
+                event.target.value = '';
+            }
+        };
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const userRef = doc(db, "users", user.uid);
@@ -1794,6 +2041,7 @@
 
             errorMsg.style.display = 'none';
             btnLogin.innerText = 'Cargando...';
+            btnLogin.disabled = true;
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
@@ -1802,6 +2050,7 @@
                 errorMsg.style.display = 'block';
             } finally {
                 btnLogin.innerText = 'Ingresar al Sistema';
+                btnLogin.disabled = false;
             }
         };
 
@@ -1812,6 +2061,7 @@
 
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
+            if (!auth.currentUser) return;
             inactivityTimer = setTimeout(() => {
                 alert("Sesión expirada por inactividad.");
                 window.logout();
@@ -1820,13 +2070,49 @@
 
         function startInactivityTimer() {
             resetInactivityTimer();
-            window.onmousemove = resetInactivityTimer;
-            window.onkeydown = resetInactivityTimer;
+            ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => {
+                window.addEventListener(evt, resetInactivityTimer, { passive: true });
+            });
         }
     </script>
 
     <!-- INTERFAZ Y NAVEGACIÓN -->
     <script>
+        // --- Utilidades ---
+        window.escapeHTML = function(v) {
+            return String(v ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        };
+
+        window.resizeAllTextareas = function() {
+            const view = document.getElementById('plan-editor-view');
+            if (!view || getComputedStyle(view).display === 'none') return;
+            view.querySelectorAll('textarea').forEach(el => window.autoExpandTextarea(el));
+        };
+
+        let _resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(_resizeTimer);
+            _resizeTimer = setTimeout(window.resizeAllTextareas, 150);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') window.hideAllPanels();
+        });
+
+        window.addDayAndScroll = async function() {
+            await window.addDayBlock();
+            const el = document.getElementById('day-' + dayCounter);
+            if (el) {
+                const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+            }
+        };
+
         window.toggleHamburgerMenu = function(e) {
             e.stopPropagation();
             const dropdown = document.getElementById('hamburger-dropdown');
@@ -1885,12 +2171,15 @@
             dayCounter = 0;
             addDayBlock("Cuádriceps");
             addDayBlock("Espalda");
+            window.resizeAllTextareas();
+            setTimeout(window.resizeAllTextareas, 500);
         };
 
         window.openPlanEditor = function() {
             hideAllPanels();
             document.getElementById('dashboard-view').style.display = 'none';
             document.getElementById('plan-editor-view').style.display = 'block';
+            window.resizeAllTextareas();
         };
 
         window.backToDashboard = function() {
@@ -1906,7 +2195,7 @@
             sel.innerHTML = '';
             const db = await window.getExerciseDatabase();
             for (let g in db) {
-                sel.innerHTML += `<option value="${g}">${g}</option>`;
+                sel.innerHTML += `<option value="${escapeHTML(g)}">${escapeHTML(g)}</option>`;
             }
         }
 
@@ -1932,9 +2221,9 @@
             for (let g in db) {
                 let tags = '';
                 db[g].forEach((ex, idx) => {
-                    tags += `<span class="ex-tag">${ex} <span class="ex-tag-remove" onclick="removeExFromAdmin('${g}', ${idx})">✕</span></span>`;
+                    tags += `<span class="ex-tag">${escapeHTML(ex)} <span class="ex-tag-remove" onclick="removeExFromAdmin('${g}', ${idx})">✕</span></span>`;
                 });
-                container.innerHTML += `<div class="ex-group-item"><div class="ex-group-title">${g}</div><div class="ex-tags-container">${tags}</div></div>`;
+                container.innerHTML += `<div class="ex-group-item"><div class="ex-group-title">${escapeHTML(g)}</div><div class="ex-tags-container">${tags}</div></div>`;
             }
         }
 
@@ -2009,8 +2298,11 @@
         window.removeDayBlock = function(dayId) {
             const el = document.getElementById(dayId);
             if (el) {
-                el.remove();
-                reorderDayBlocks();
+                el.classList.add('is-removing');
+                setTimeout(() => {
+                    el.remove();
+                    reorderDayBlocks();
+                }, 230);
             }
         }
 
@@ -2087,10 +2379,10 @@
             const rowHTML = `
                 <tr id="${rowId}">
                     <td><select id="ex-select-${rowId}"></select></td>
-                    <td><input type="text" value="${data.sets}" style="text-align: center;"></td>
-                    <td><input type="text" value="${data.intensity}" style="text-align: center;"></td>
-                    <td><input type="text" value="${data.cadence}" style="text-align: center;"></td>
-                    <td><textarea class="table-textarea" rows="1" oninput="autoExpandTextarea(this)">${data.notes}</textarea></td>
+                    <td><input type="text" value="${escapeHTML(data.sets)}" style="text-align: center;"></td>
+                    <td><input type="text" value="${escapeHTML(data.intensity)}" style="text-align: center;"></td>
+                    <td><input type="text" value="${escapeHTML(data.cadence)}" style="text-align: center;"></td>
+                    <td><textarea class="table-textarea" rows="1" oninput="autoExpandTextarea(this)">${escapeHTML(data.notes)}</textarea></td>
                     <td class="remove-col" style="text-align: center;">
                         <button class="btn btn-danger btn-sm" onclick="removeElement('${rowId}')">✕</button>
                     </td>
@@ -2139,7 +2431,10 @@
 
         window.removeElement = function(id) {
             const el = document.getElementById(id);
-            if (el) el.remove();
+            if (el) {
+                el.classList.add('is-removing');
+                setTimeout(() => el.remove(), 230);
+            }
         }
 
         window.autoExpandTextarea = function(el) {
