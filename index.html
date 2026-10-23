@@ -1,2450 +1,1585 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Alumnos - Sergio Fernandez Personal Trainer</title>
-    
-    <!-- ICONO DE LA WEB (FAVICON) Y APLICACIÓN MÓVIL -->
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="apple-touch-icon" href="logo.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="SF Fitness">
-
-    <style>
-        /* --- MÁRGENES Y CONFIGURACIÓN GENERAL --- */
-        @page {
-            size: A4 portrait;
-            margin: 4mm 2mm 4mm 2mm !important;
-            background-color: #000000 !important;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
-        }
-
-        html, body {
-            background-color: #050505 !important;
-            color: #ffffff !important;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            width: 100%;
-            min-height: 100vh;
-        }
-
-        body {
-            padding: 6px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        img {
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            object-fit: contain;
-        }
-
-        .emoji-red {
-            font-style: normal;
-        }
-
-        /* --- FONDO DE GYM Y MARCA DE AGUA GENERAL (MÁS NOTORIA Y GRANDE) --- */
-        .gym-bg-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(5, 5, 5, 0.92)), 
-                        url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1920&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .watermark-bg {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: min(85vw, 600px);
-            height: min(85vw, 600px);
-            background-image: url('logo.png');
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-size: contain;
-            opacity: 0.18;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* --- PANTALLA DE LOGIN --- */
-        #login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.96)), 
-                        url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1920&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 15px;
-        }
-
-        .login-card {
-            background: rgba(10, 10, 10, 0.92);
-            backdrop-filter: blur(10px);
-            border: 2px solid #d4af37;
-            border-radius: 14px;
-            padding: 30px 20px;
-            width: 100%;
-            max-width: 380px;
-            text-align: center;
-            box-shadow: 0px 0px 30px rgba(212, 175, 55, 0.25);
-        }
-
-        .login-logo {
-            width: 110px;
-            height: 110px;
-            margin: 0 auto 12px auto;
-            display: block;
-            filter: drop-shadow(0 0 10px rgba(212,175,55,0.4));
-        }
-
-        .login-title {
-            color: #d4af37;
-            font-size: 20px;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 2px;
-        }
-
-        .login-subtitle {
-            color: #aaaaaa;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-
-        .login-header-action {
-            color: #d4af37;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            border-bottom: 1.5px solid rgba(212, 175, 55, 0.5);
-            padding-bottom: 8px;
-        }
-
-        .input-group {
-            margin-bottom: 18px;
-            text-align: left;
-        }
-
-        .input-group label {
-            display: block;
-            color: #d4af37;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-        }
-
-        .input-group input, .input-group select {
-            width: 100%;
-            padding: 12px;
-            background: rgba(18, 18, 18, 0.9);
-            border: 1.5px solid rgba(212, 175, 55, 0.5);
-            border-radius: 6px;
-            color: #ffffff;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .btn-login {
-            width: 100%;
-            background: linear-gradient(135deg, #d4af37 0%, #aa8828 100%);
-            color: #000000;
-            border: none;
-            padding: 14px;
-            border-radius: 6px;
-            font-weight: 800;
-            cursor: pointer;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 10px;
-            transition: transform 0.2s;
-        }
-
-        .btn-login:hover {
-            transform: scale(1.02);
-        }
-
-        .error-message {
-            color: #e53e3e;
-            font-size: 11px;
-            margin-top: 15px;
-            display: none;
-            font-weight: bold;
-        }
-
-        /* --- CONTENIDO PRINCIPAL Y VISTAS --- */
-        #app-content {
-            display: none;
-            position: relative;
-            z-index: 2;
-            min-height: 100vh;
-            flex-direction: column;
-            flex: 1;
-            width: 100%;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: transparent !important;
-            padding: 4px;
-            position: relative;
-            flex: 1;
-            z-index: 2;
-            width: 100%;
-        }
-
-        #dashboard-view {
-            display: block;
-            width: 100%;
-        }
-
-        #plan-editor-view {
-            display: none;
-            width: 100%;
-        }
-
-        /* BARRA SUPERIOR CON MENÚ HAMBURGUESA */
-        .top-navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(10, 10, 10, 0.85);
-            backdrop-filter: blur(8px);
-            border: 2px solid #d4af37;
-            border-radius: 12px;
-            padding: 10px 16px;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1000; /* CORREGIDO: Elevado para asegurar que esté al frente */
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
-        }
-
-        .navbar-brand-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .navbar-logo-img {
-            width: 36px;
-            height: 36px;
-        }
-
-        .navbar-brand-text {
-            color: #d4af37;
-            font-size: 14px;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-
-        .hamburger-menu-container {
-            position: relative;
-        }
-
-        .hamburger-btn {
-            background: linear-gradient(135deg, #d4af37 0%, #aa8828 100%);
-            color: #000000;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
-        }
-
-        .hamburger-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .dropdown-menu-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 50px;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(10px);
-            border: 2px solid #d4af37;
-            border-radius: 10px;
-            min-width: 230px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-            z-index: 9999; /* CORREGIDO: z-index muy alto para que salga completamente al frente */
-            overflow: hidden;
-        }
-
-        .dropdown-menu-content.show {
-            display: block;
-        }
-
-        .dropdown-item {
-            padding: 12px 16px;
-            color: #ffffff;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: transparent;
-            width: 100%;
-            text-align: left;
-            transition: background 0.2s;
-        }
-
-        .dropdown-item:hover {
-            background: rgba(212, 175, 55, 0.2);
-            color: #d4af37;
-        }
-
-        .dropdown-item:last-child {
-            border-bottom: none;
-            color: #e53e3e;
-        }
-
-        /* HERO / ENCABEZADO PRINCIPAL */
-        .dashboard-hero {
-            background: linear-gradient(rgba(10, 10, 10, 0.85), rgba(15, 15, 15, 0.92)), 
-                        url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1200&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            border: 2px solid #d4af37;
-            border-radius: 16px;
-            padding: 30px 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .dashboard-hero::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .hero-logo {
-            width: 85px;
-            height: 85px;
-            margin: 0 auto 14px auto;
-            display: block;
-            filter: drop-shadow(0 0 12px rgba(212,175,55,0.5));
-        }
-
-        .dashboard-hero h1 {
-            color: #d4af37;
-            font-size: 26px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-        }
-
-        .dashboard-hero p {
-            color: #e0e0e0;
-            font-size: 11.5px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        /* CUADRO GENERAR PLAN DE ENTRENAMIENTO */
-        .generate-plan-card {
-            background: rgba(12, 12, 12, 0.88);
-            backdrop-filter: blur(8px);
-            border: 2px solid #d4af37;
-            border-radius: 14px;
-            padding: 24px 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 4px 18px rgba(212, 175, 55, 0.2);
-        }
-
-        .generate-plan-card h2 {
-            color: #d4af37;
-            font-size: 16px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            font-weight: 900;
-            letter-spacing: 1px;
-        }
-
-        .generate-plan-card p {
-            color: #cccccc;
-            font-size: 12px;
-            margin-bottom: 18px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .btn-gold-large {
-            background: linear-gradient(135deg, #d4af37 0%, #aa8828 100%);
-            color: #000000;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 10px;
-            font-weight: 900;
-            cursor: pointer;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn-gold-large:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
-        }
-
-        /* --- PANELES ADMINISTRATIVOS --- */
-        .admin-panel {
-            background: rgba(10, 10, 10, 0.92);
-            backdrop-filter: blur(10px);
-            border: 2px solid #d4af37;
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 20px;
-            display: none;
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.2);
-            position: relative;
-        }
-
-        .admin-panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1.5px solid rgba(212, 175, 55, 0.3);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-
-        .admin-panel-header h3 {
-            color: #d4af37;
-            font-size: 14px;
-            text-transform: uppercase;
-            font-weight: 900;
-            letter-spacing: 1px;
-        }
-
-        .close-panel-btn {
-            background: #121212;
-            color: #d4af37;
-            border: 1.5px solid #d4af37;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            font-size: 13px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .close-panel-btn:hover {
-            background: #d4af37;
-            color: #000000;
-        }
-
-        .admin-form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .admin-form input, .admin-form select {
-            padding: 11px;
-            background: rgba(18, 18, 18, 0.9);
-            border: 1.5px solid rgba(212, 175, 55, 0.5);
-            border-radius: 8px;
-            color: #ffffff;
-            font-size: 12px;
-            flex: 1 1 150px;
-            outline: none;
-        }
-
-        .user-list-container {
-            max-height: 280px;
-            overflow-y: auto;
-            border: 1.5px solid rgba(212, 175, 55, 0.4);
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        .user-item-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1.5px solid rgba(212, 175, 55, 0.2);
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .user-role-select {
-            background: #121212;
-            color: #d4af37;
-            border: 1.5px solid #d4af37;
-            border-radius: 6px;
-            padding: 5px 8px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            outline: none;
-        }
-
-        .exercise-db-view {
-            max-height: 220px;
-            overflow-y: auto;
-            border: 1.5px solid rgba(212, 175, 55, 0.4);
-            padding: 10px;
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.8);
-            margin-top: 10px;
-        }
-
-        .ex-group-item {
-            margin-bottom: 10px;
-        }
-
-        .ex-group-title {
-            color: #d4af37;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-bottom: 1.5px solid rgba(212, 175, 55, 0.4);
-            padding-bottom: 3px;
-            margin-bottom: 6px;
-        }
-
-        .ex-tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .ex-tag {
-            background: #121212;
-            border: 1px solid #d4af37;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 10.5px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #ffffff;
-        }
-
-        .ex-tag-remove {
-            color: #e53e3e;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* CAMBIAR CONTRASEÑA */
-        .password-card-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            max-width: 450px;
-            margin: 0 auto;
-        }
-
-        .password-input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .password-input-wrapper input {
-            width: 100%;
-            padding: 12px 14px;
-            background: rgba(18, 18, 18, 0.9);
-            border: 1.5px solid rgba(212, 175, 55, 0.5);
-            border-radius: 8px;
-            color: #ffffff;
-            font-size: 13px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .password-input-wrapper input:focus {
-            border-color: #d4af37;
-            box-shadow: 0 0 8px rgba(212, 175, 55, 0.25);
-        }
-
-        .btn-gold-action {
-            background: linear-gradient(135deg, #d4af37 0%, #aa8828 100%);
-            color: #000000;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 900;
-            cursor: pointer;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-            transition: opacity 0.2s;
-        }
-
-        .btn-gold-action:hover {
-            opacity: 0.95;
-        }
-
-        /* LISTA DE ALUMNOS */
-        .students-section-title {
-            color: #d4af37;
-            font-size: 14px;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            border-left: 4px solid #d4af37;
-            padding-left: 10px;
-            letter-spacing: 0.5px;
-        }
-
-        .students-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 14px;
-            margin-bottom: 25px;
-        }
-
-        .student-card {
-            background: rgba(10, 10, 10, 0.88);
-            backdrop-filter: blur(6px);
-            border: 1.5px solid rgba(212, 175, 55, 0.4);
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: all 0.2s;
-        }
-
-        .student-card:hover {
-            border-color: #d4af37;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(212, 175, 55, 0.15);
-        }
-
-        .student-info h4 {
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .student-info p {
-            color: #aaaaaa;
-            font-size: 11.5px;
-        }
-
-        .student-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        /* Botones generales */
-        .btn {
-            background: linear-gradient(135deg, #d4af37 0%, #aa8828 100%);
-            color: #000000;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-        }
-
-        .btn:hover { opacity: 0.95; }
-        .btn-danger { background: linear-gradient(135deg, #e53e3e 0%, #9b2c2c 100%); color: #ffffff; }
-        .btn-secondary { background: #121212; color: #d4af37; border: 1.5px solid #d4af37; }
-        .btn-sm { padding: 5px 10px; font-size: 11px; }
-
-        /* --- ENCABEZADO Y BANNER SUPERIOR (EDITOR) CON LOGOS UNIFORMES --- */
-        .header-banner {
-            border: 2px solid #d4af37;
-            border-radius: 10px;
-            padding: 12px 14px;
-            margin-bottom: 10px;
-            background: #000000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            page-break-inside: avoid;
-            break-inside: avoid;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .header-main-layout {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 800px;
-            gap: 15px;
-        }
-
-        .header-left-logo {
-            flex: 0 0 130px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .header-logo-large {
-            width: 95px;
-            height: 95px;
-            display: block;
-        }
-
-        .header-divider {
-            width: 2px;
-            background: linear-gradient(180deg, transparent 0%, #d4af37 15%, #d4af37 85%, transparent 100%);
-            border-radius: 2px;
-            flex-shrink: 0;
-            align-self: stretch;
-        }
-
-        .header-right-text {
-            flex: 1;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 2px 0;
-        }
-
-        .main-title {
-            color: #d4af37;
-            font-size: 20px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            line-height: 1.1;
-            margin-bottom: 2px;
-        }
-
-        .sub-title {
-            color: #ffffff !important;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 2px;
-        }
-
-        .trainer-title {
-            color: #d4af37;
-            font-size: 9.5px;
-            font-weight: 800;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            margin-bottom: 3px;
-        }
-
-        .motto-container {
-            text-align: center;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-
-        .editable-motto {
-            color: #ffffff !important;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            background: transparent;
-            border: none;
-            border-bottom: 1.5px dashed rgba(212, 175, 55, 0.6);
-            text-align: center;
-            width: 100%;
-            max-width: 350px;
-            outline: none;
-            padding: 2px;
-            font-family: inherit;
-            resize: none;
-            overflow: hidden;
-            display: block;
-            line-height: 1.2;
-        }
-
-        /* --- TARJETA DE ATLETA --- */
-        .athlete-card {
-            border: 2px solid #d4af37;
-            border-radius: 10px;
-            padding: 10px 14px;
-            margin-bottom: 10px;
-            background: #000000;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px 15px;
-            page-break-inside: avoid;
-            break-inside: avoid;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .card-field {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            background: #000000;
-        }
-
-        .gold-icon {
-            width: 16px;
-            height: 16px;
-            fill: #d4af37;
-            flex-shrink: 0;
-        }
-
-        .card-field label {
-            color: #ffffff !important;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        .card-field input {
-            background: #121212;
-            border: none;
-            border-bottom: 1.5px solid rgba(212, 175, 55, 0.5);
-            color: #ffffff !important;
-            font-size: 12px;
-            width: 100%;
-            padding: 4px 6px;
-            outline: none;
-        }
-
-        /* --- BLOQUE DE DÍA --- */
-        .day-block {
-            margin-bottom: 10px;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            page-break-before: auto;
-            padding-top: 4px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 6px 0 4px 0;
-            border-left: 4px solid #d4af37;
-            padding-left: 8px;
-            gap: 8px;
-            flex-wrap: wrap;
-            page-break-after: avoid;
-            break-after: avoid;
-        }
-
-        .header-title-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex: 1 1 auto;
-        }
-
-        .day-prefix {
-            font-size: 13px;
-            color: #d4af37;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-        }
-
-        .group-select-inline {
-            background: #000000;
-            color: #ffffff;
-            border: 1.5px solid #d4af37;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 13px;
-            font-weight: bold;
-            text-transform: uppercase;
-            outline: none;
-            cursor: pointer;
-            max-width: 250px;
-        }
-
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            margin-bottom: 4px;
-            border-radius: 6px;
-            border: 2px solid #d4af37;
-            background: #000000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        table {
-            width: 100%;
-            min-width: 650px;
-            border-collapse: collapse;
-            background: #000000;
-            table-layout: fixed;
-        }
-
-        th {
-            background-color: #0b0b0b;
-            color: #d4af37;
-            font-weight: 700;
-            text-align: left;
-            padding: 8px 10px;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #d4af37;
-            border-right: 1.5px solid rgba(212, 175, 55, 0.3);
-        }
-
-        th:last-child { border-right: none; }
-
-        td {
-            padding: 7px 8px;
-            border-bottom: 1.5px solid rgba(212, 175, 55, 0.25);
-            border-right: 1.5px solid rgba(212, 175, 55, 0.15);
-            font-size: 12.5px;
-            color: #ffffff;
-            vertical-align: middle;
-            background: #000000;
-        }
-
-        td:last-child { border-right: none; }
-        tr:nth-child(even) td { background-color: #080808; }
-
-        select, input[type="text"] {
-            background: #121212;
-            color: #ffffff;
-            border: 1.5px solid rgba(212, 175, 55, 0.4);
-            border-radius: 4px;
-            padding: 6px 8px;
-            font-size: 12.5px;
-            width: 100%;
-        }
-
-        .table-textarea {
-            background: transparent;
-            color: #ffffff;
-            border: none;
-            outline: none;
-            font-family: inherit;
-            font-size: 12.5px;
-            width: 100%;
-            resize: none;
-            overflow: hidden;
-            display: block;
-            line-height: 1.3;
-        }
-
-        /* --- CAJA DE NOTAS GENERALES --- */
-        .notes-box {
-            background: #000000;
-            border-left: 4px solid #d4af37;
-            border-top: 2px solid rgba(212, 175, 55, 0.6);
-            border-right: 2px solid rgba(212, 175, 55, 0.6);
-            border-bottom: 2px solid rgba(212, 175, 55, 0.6);
-            border-radius: 8px;
-            padding: 10px 12px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-
-        .notes-box strong {
-            color: #d4af37;
-            display: block;
-            margin-bottom: 4px;
-            font-size: 12.5px;
-        }
-
-        .editable-textarea {
-            width: 100%;
-            min-height: 45px;
-            background: transparent;
-            color: #ffffff;
-            border: none;
-            outline: none;
-            font-family: inherit;
-            font-size: 12px;
-            line-height: 1.3;
-            resize: none;
-            overflow: hidden;
-        }
-
-        /* --- PIE DE PÁGINA Y DERECHOS RESERVADOS --- */
-        .page-footer-container {
-            position: relative;
-            width: 100%;
-            text-align: center;
-            background-color: #000000;
-            z-index: 999;
-            padding: 10px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 10px;
-            page-break-inside: avoid;
-        }
-
-        .page-footer-container::after {
-            content: "";
-            display: block;
-            width: 100%;
-            height: 1.5px;
-            background: #d4af37;
-            order: 2;
-            margin: 6px 0 8px 0;
-        }
-
-        .bottom-logo-small {
-            width: 65px;
-            height: 65px;
-            margin: 0 auto 4px auto;
-            display: block;
-            order: 1;
-            filter: drop-shadow(0 0 6px rgba(212,175,55,0.3));
-        }
-
-        .footer {
-            order: 3;
-            text-align: center;
-            font-size: 10.5px;
-            color: #dddddd;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            width: 100%;
-            font-weight: 700;
-        }
-
-        /* ==========================================================
-           MÓVIL Y OPTIMIZACIÓN
-           ========================================================== */
-        @media screen and (max-width: 767px) {
-            body { padding: 6px; }
-            .container { padding: 0; }
-            .header-banner { padding: 12px 8px; text-align: center; }
-            .header-main-layout { flex-direction: column; align-items: center; text-align: center; gap: 8px; }
-            .header-left-logo { flex: 0 0 auto; width: 100%; display: flex; justify-content: center; align-items: center; }
-            .header-logo-large { width: 85px; height: 85px; margin: 0 auto; display: block; }
-            .header-divider { width: 80% !important; height: 1.5px !important; margin: 0 auto !important; background: linear-gradient(90deg, transparent 0%, #d4af37 15%, #d4af37 85%, transparent 100%) !important; }
-            .header-right-text { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
-            .main-title { font-size: 18px !important; }
-            .sub-title { font-size: 11px !important; }
-            .trainer-title { font-size: 9px !important; }
-            .motto-container { display: flex; justify-content: center; width: 100%; }
-            .editable-motto { text-align: center !important; margin: 0 auto; color: #ffffff !important; font-size: 10px !important; max-width: 100% !important; }
-            .athlete-card { grid-template-columns: 1fr !important; gap: 6px 10px !important; padding: 8px 10px !important; }
-            .card-field { font-size: 12px !important; }
-            .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 6px; }
-            table { min-width: 850px !important; }
-            th, td { padding: 10px 12px !important; font-size: 12.5px !important; }
-            select, input[type="text"], .table-textarea { font-size: 12.5px !important; padding: 6px 8px !important; }
-        }
-
-        /* ==========================================================
-           IMPRESIÓN / PDF
-           ========================================================== */
-        @media print {
-            @page {
-                size: A4 portrait;
-                margin: 6mm 3mm 6mm 3mm !important;
-                background-color: #000000 !important;
-            }
-
-            html, body {
-                background: #000000 !important;
-                color: #ffffff !important;
-                width: 100% !important;
-                height: 100% !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            body { padding: 0 !important; margin: 0 !important; display: block !important; }
-
-            .no-print, .remove-col, .top-navbar, #dashboard-view, .admin-panel, .gym-bg-overlay {
-                display: none !important;
-            }
-
-            #plan-editor-view { display: block !important; }
-            #app-content { display: block !important; position: relative !important; z-index: 2 !important; background-color: transparent !important; }
-            .container { width: 100% !important; max-width: none !important; margin: 0 auto !important; padding: 0 !important; background-color: transparent !important; }
-
-            .header-banner, .athlete-card, .notes-box, .table-responsive, table, th, td, tr:nth-child(even) td, .card-field {
-                background: transparent !important;
-                background-color: transparent !important;
-                border: 1.5px solid #d4af37 !important;
-                box-shadow: none !important;
-            }
-
-            .header-banner { margin-top: 4px !important; }
-            .day-block { page-break-before: auto !important; break-before: auto !important; margin-top: 8px !important; }
-
-            th, td {
-                border: 1.5px solid rgba(212, 175, 55, 0.6) !important;
-                overflow-wrap: break-word !important;
-                word-break: break-word !important;
-                white-space: normal !important;
-                padding: 7px 8px !important;
-                font-size: 11px !important;
-                color: #ffffff !important;
-            }
-
-            th {
-                font-size: 11.5px !important;
-            }
-
-            input, select, textarea, .table-textarea, .editable-textarea, .editable-motto {
-                background: transparent !important;
-                color: #ffffff !important;
-                border: none !important;
-                font-size: 11px !important;
-                resize: none !important;
-                padding: 0 !important;
-                box-shadow: none !important;
-                appearance: none !important;
-                -webkit-appearance: none !important;
-            }
-
-            thead { display: table-header-group !important; }
-            tr { page-break-inside: avoid !important; break-inside: avoid !important; }
-            .day-block { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 6px !important; }
-
-            .watermark-bg {
-                position: fixed !important;
-                top: 50% !important;
-                left: 50% !important;
-                transform: translate(-50%, -50%) !important;
-                width: 500px !important;
-                height: 500px !important;
-                background-image: url('logo.png') !important;
-                background-repeat: no-repeat !important;
-                background-position: center center !important;
-                background-size: contain !important;
-                opacity: 0.22 !important;
-                z-index: 0 !important;
-                pointer-events: none !important;
-            }
-
-            .page-footer-container {
-                display: flex !important;
-                position: relative !important;
-                margin-top: 10px !important;
-                margin-bottom: 2px !important;
-                padding-bottom: 2px !important;
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-                background-color: transparent !important;
-                z-index: 3 !important;
-            }
-        }
-
-        /* ==========================================================
-           ANIMACIONES Y MICROINTERACCIONES (no cambian el formato)
-           ========================================================== */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-        @keyframes popIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
-        @keyframes dropDown { from { opacity: 0; transform: translateY(-8px) scale(0.98); } to { opacity: 1; transform: none; } }
-        @keyframes goldGlow {
-            0%, 100% { filter: drop-shadow(0 0 8px rgba(212,175,55,0.35)); }
-            50% { filter: drop-shadow(0 0 18px rgba(212,175,55,0.8)); }
-        }
-        @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        @keyframes heroGlow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
-        @keyframes shineSweep { 0%, 55% { left: -120%; } 100% { left: 140%; } }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-6px); }
-            40% { transform: translateX(6px); }
-            60% { transform: translateX(-4px); }
-            80% { transform: translateX(4px); }
-        }
-        @keyframes watermarkBreath { 0%, 100% { opacity: 0.16; } 50% { opacity: 0.21; } }
-
-        .watermark-bg { animation: watermarkBreath 9s ease-in-out infinite; }
-
-        .login-card { animation: popIn 0.55s ease backwards; }
-        .login-logo { animation: goldGlow 3.2s ease-in-out infinite; }
-        .error-message { animation: shake 0.4s ease; }
-
-        .top-navbar { animation: fadeIn 0.5s ease backwards; }
-        .dashboard-hero { animation: fadeInUp 0.6s ease backwards; }
-        .dashboard-hero::before { animation: heroGlow 4.5s ease-in-out infinite; }
-        .hero-logo { animation: goldGlow 3.2s ease-in-out infinite, floatLogo 5s ease-in-out infinite; }
-        .generate-plan-card { animation: fadeInUp 0.6s ease 0.1s backwards; }
-        .students-section-title { animation: fadeIn 0.6s ease 0.2s backwards; }
-
-        .btn-gold-large { position: relative; overflow: hidden; }
-        .btn-gold-large::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -120%;
-            width: 60%;
-            height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.38), transparent);
-            transform: skewX(-20deg);
-            animation: shineSweep 3.6s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        #dashboard-view, #plan-editor-view { animation: fadeIn 0.35s ease; }
-
-        .student-card { animation: fadeInUp 0.45s ease backwards; }
-        .student-card:nth-child(1) { animation-delay: 0.05s; }
-        .student-card:nth-child(2) { animation-delay: 0.12s; }
-        .student-card:nth-child(3) { animation-delay: 0.19s; }
-        .student-card:nth-child(4) { animation-delay: 0.26s; }
-        .student-card:nth-child(5) { animation-delay: 0.33s; }
-        .student-card:nth-child(6) { animation-delay: 0.40s; }
-        .student-card:nth-child(7) { animation-delay: 0.47s; }
-        .student-card:nth-child(8) { animation-delay: 0.54s; }
-
-        .admin-panel { animation: dropDown 0.3s ease backwards; }
-        .dropdown-menu-content.show { animation: dropDown 0.22s ease backwards; transform-origin: top right; }
-        .dropdown-item:hover { box-shadow: inset 3px 0 0 #d4af37; }
-        .user-item-row { animation: fadeIn 0.3s ease backwards; }
-        .ex-tag { animation: popIn 0.25s ease backwards; }
-
-        .quick-actions-bar { animation: fadeIn 0.4s ease backwards; }
-        .header-banner { animation: fadeInUp 0.5s ease backwards; }
-        .athlete-card { animation: fadeInUp 0.5s ease 0.08s backwards; }
-        .day-block { animation: fadeInUp 0.45s ease backwards; }
-        tbody tr { animation: fadeIn 0.35s ease backwards; }
-        .notes-box { animation: fadeInUp 0.45s ease backwards; }
-
-        .btn, .btn-gold-action, .btn-login, .btn-gold-large, .hamburger-btn, .close-panel-btn {
-            transition: transform 0.15s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
-        }
-        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(212,175,55,0.25); }
-        .btn:active, .btn-gold-action:active, .btn-login:active, .btn-gold-large:active, .hamburger-btn:active {
-            transform: scale(0.96);
-        }
-        .close-panel-btn:hover { transform: rotate(90deg); }
-
-        .input-group input, .admin-form input, .admin-form select, .card-field input, select, input[type="text"] {
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .input-group input:focus, .admin-form input:focus, .admin-form select:focus,
-        select:focus, input[type="text"]:focus {
-            border-color: #d4af37;
-            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
-        }
-        .card-field input:focus { border-bottom-color: #d4af37; box-shadow: none; }
-
-        .is-removing {
-            opacity: 0 !important;
-            transform: translateX(14px) !important;
-            transition: opacity 0.22s ease, transform 0.22s ease;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-
-        @media print {
-            *, *::before, *::after { animation: none !important; transition: none !important; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="format-detection" content="telephone=no">
+<title>Panel de Alumnos - Sergio Fernandez Personal Trainer</title>
+
+<!-- ICONO DE LA WEB Y APLICACIÓN MÓVIL -->
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SF Fitness">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================
+   BASE
+   ========================================================== */
+:root{
+  --gold:#d4af37; --gold-deep:#a8841f; --gold-light:#ecd27a;
+  --black:#000; --s1:#0a0a0a; --s2:#121212; --s3:#1a1a1a;
+  --line:rgba(212,175,55,.28); --line-strong:rgba(212,175,55,.62);
+  --text:#f4efe3; --muted:#a39b86; --danger:#e5484d; --ok:#4cc38a;
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+  --font-h:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --font-b:'Barlow','Helvetica Neue',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+html,body{background:#000;color:var(--text);font-family:var(--font-b);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{min-height:100vh;min-height:100dvh;position:relative}
+img{max-width:100%;object-fit:contain}
+button{font-family:inherit;color:inherit;cursor:pointer}
+.ic{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:16px;height:16px}
+.muted{color:var(--muted)}
+
+/* Fondo */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,.88),rgba(0,0,0,.94)),url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat}
+.wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(80vw,560px);height:min(80vw,560px);
+  background:url('logo.png') center/contain no-repeat;opacity:.13;pointer-events:none;z-index:0}
+
+/* ==========================================================
+   COMPONENTES
+   ========================================================== */
+.btn{min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--line-strong);background:var(--s2);color:var(--gold-light);
+  font:600 15px var(--font-b);display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;
+  transition:transform .15s ease,background .2s ease,opacity .2s ease}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.55;pointer-events:none}
+.btn-gold{background:linear-gradient(135deg,var(--gold-light),var(--gold) 45%,var(--gold-deep));color:#140e00;border-color:transparent}
+.btn-danger{background:rgba(229,72,77,.12);border-color:rgba(229,72,77,.5);color:#ff8a8e}
+.btn-sm{min-height:38px;padding:0 12px;font-size:14px;border-radius:10px}
+.btn-block{width:100%}
+.icon-btn{width:44px;height:44px;flex:none;border-radius:12px;border:1px solid var(--line-strong);background:var(--s2);color:var(--gold-light);
+  display:inline-flex;align-items:center;justify-content:center;transition:transform .15s ease,background .2s ease}
+.icon-btn:active{transform:scale(.94)}
+.icon-btn.danger{color:#ff8a8e;border-color:rgba(229,72,77,.45);background:rgba(229,72,77,.1)}
+.icon-btn.sm{width:38px;height:38px;border-radius:10px}
+
+.fld{width:100%;min-height:46px;padding:10px 12px;background:var(--s2);color:var(--text);border:1px solid var(--line);border-radius:10px;
+  font:500 16px/1.3 var(--font-b);outline:none;-webkit-appearance:none;appearance:none;transition:border-color .2s,box-shadow .2s}
+.fld:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.2)}
+.fld::placeholder{color:#6f6955}
+select.fld{padding-right:36px;background-repeat:no-repeat;background-position:right 12px center;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+textarea.fld{resize:none;overflow:hidden;display:block;min-height:46px}
+.lbl-f{display:block;color:var(--gold);font-size:12.5px;font-weight:600;letter-spacing:.02em;margin-bottom:6px}
+
+.card{background:rgba(10,10,10,.9);border:1px solid var(--line);border-radius:18px}
+
+/* ==========================================================
+   LOGIN
+   ========================================================== */
+#login-screen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto;
+  background:linear-gradient(rgba(0,0,0,.9),rgba(0,0,0,.97)),url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat}
+.login-card{width:100%;max-width:400px;padding:30px 22px 26px;text-align:center;background:rgba(8,8,8,.94);border:1px solid var(--line-strong);border-radius:22px;
+  box-shadow:0 0 0 1px rgba(212,175,55,.08),0 24px 60px rgba(0,0,0,.7);animation:rise .5s ease backwards}
+.login-logo{width:104px;height:104px;margin:0 auto 14px;display:block;filter:drop-shadow(0 0 14px rgba(212,175,55,.4))}
+.login-title{font:800 28px/1 var(--font-h);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.login-sub{font:600 13px var(--font-b);letter-spacing:.32em;text-transform:uppercase;color:var(--muted);margin:6px 0 22px}
+.login-form{text-align:left;display:flex;flex-direction:column;gap:16px}
+.pass-wrap{position:relative}
+.pass-wrap .fld{padding-right:50px}
+.pass-toggle{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:42px;height:42px;background:none;border:none;color:var(--gold)}
+.error-message{color:#ff8a8e;font-size:13px;font-weight:600;text-align:center;display:none}
+
+/* ==========================================================
+   APP: BARRA SUPERIOR + MENÚ LATERAL
+   ========================================================== */
+#app{position:relative;z-index:2;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:calc(10px + var(--safe-t)) 14px 10px;background:rgba(0,0,0,.88);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-strong)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand img{width:38px;height:38px}
+.brand-name{font:800 20px/1 var(--font-h);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.brand-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+.drawer-backdrop{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.72);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.drawer-backdrop.open{opacity:1;visibility:visible}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:55;width:min(88vw,340px);display:flex;flex-direction:column;
+  background:#070707;border-left:1px solid var(--line-strong);transform:translateX(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);
+  padding:calc(16px + var(--safe-t)) 0 calc(16px + var(--safe-b))}
+.drawer.open{transform:none}
+.drawer-head{display:flex;align-items:center;gap:12px;padding:0 16px 16px;border-bottom:1px solid var(--line)}
+.drawer-avatar{width:46px;height:46px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold-deep));color:#140e00}
+.drawer-user{min-width:0;flex:1}
+.drawer-email{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drawer-role{font-size:12px;color:var(--gold);font-weight:600;text-transform:capitalize}
+.drawer-nav{flex:1;overflow-y:auto;padding:10px 10px 0}
+.drawer-group{font-size:12px;font-weight:600;color:var(--muted);padding:14px 10px 6px;letter-spacing:.04em}
+.nav-item{width:100%;min-height:52px;display:flex;align-items:center;gap:14px;padding:0 12px;background:none;border:none;border-radius:12px;text-align:left;font:600 15.5px var(--font-b);color:var(--text)}
+.nav-item .ic{color:var(--gold)}
+.nav-item:active{background:rgba(212,175,55,.14)}
+.nav-item.danger,.nav-item.danger .ic{color:#ff8a8e}
+
+/* ==========================================================
+   VISTAS
+   ========================================================== */
+main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:16px 14px 28px}
+
+/* ---------- Dashboard ---------- */
+.hero{position:relative;overflow:hidden;padding:22px 18px 18px;border-radius:22px;border:1px solid var(--line-strong);
+  background:linear-gradient(115deg,rgba(0,0,0,.92) 30%,rgba(0,0,0,.6)),url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1200&auto=format&fit=crop') center/cover;
+  animation:rise .5s ease backwards}
+.hero-top{display:flex;align-items:center;gap:14px}
+.hero-logo{width:72px;height:72px;flex:none;filter:drop-shadow(0 0 12px rgba(212,175,55,.5))}
+.hero h1{font:800 34px/1 var(--font-h);letter-spacing:.05em;text-transform:uppercase;color:var(--gold)}
+.hero p{color:#cfc8b3;font-size:14px;margin-top:5px}
+.hero-stats{display:flex;gap:10px;margin:18px 0 16px}
+.stat{flex:1;padding:10px 12px;border-radius:14px;background:rgba(0,0,0,.55);border:1px solid var(--line)}
+.stat b{display:block;font:700 26px/1.05 var(--font-h);color:var(--gold-light)}
+.stat span{font-size:12.5px;color:var(--muted)}
+.stat b.role{font-size:20px;text-transform:capitalize;padding-top:5px}
+.cta{min-height:54px;font-size:16px;border-radius:14px}
+
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:26px 0 12px}
+.section-title h2{font:700 22px/1 var(--font-h);letter-spacing:.06em;text-transform:uppercase;color:var(--gold);border-left:4px solid var(--gold);padding-left:10px}
+.search-wrap{position:relative;margin-bottom:14px}
+.search-wrap .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gold);pointer-events:none}
+.search-wrap .fld{padding-left:42px}
+
+.students-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.student-card{position:relative;overflow:hidden;padding:18px 16px 14px;border-radius:20px;display:flex;flex-direction:column;gap:14px;
+  background:linear-gradient(160deg,rgba(30,24,7,.96),rgba(8,8,8,.97) 58%);border:1px solid var(--line);
+  transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.student-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--gold-light),var(--gold),transparent);background-size:200% 100%}
+.student-card::after{content:"";position:absolute;top:0;left:-70%;width:40%;height:100%;pointer-events:none;
+  background:linear-gradient(110deg,transparent,rgba(236,210,122,.10),transparent);transform:skewX(-18deg)}
+.student-card:active{transform:scale(.985)}
+.sc-head{display:flex;align-items:center;gap:14px;min-width:0}
+.avatar{position:relative;width:56px;height:56px;flex:none;border-radius:50%}
+.avatar::before{content:"";position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(var(--gold-light),transparent 35%,var(--gold),transparent 70%,var(--gold-light))}
+.avatar span{position:absolute;inset:3px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font:800 21px var(--font-h);letter-spacing:.04em;color:var(--gold-light);background:#0b0b0b}
+.student-info{min-width:0;flex:1}
+.student-info h4{font:700 24px/1.05 var(--font-h);letter-spacing:.03em;text-transform:uppercase;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.student-meta{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13.5px;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.student-meta .ic{color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;
+  color:var(--gold-light);background:rgba(212,175,55,.1);border:1px solid var(--line)}
+.chip .ic{width:14px;height:14px;color:var(--gold)}
+.sc-date{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12.5px;padding-top:12px;border-top:1px dashed var(--line)}
+.sc-date .ic{width:14px;height:14px;color:var(--gold)}
+.student-actions{display:flex;gap:8px}
+.student-actions .btn{flex:1}
+.empty-state{padding:30px 18px;text-align:center;color:var(--muted);border:1px dashed var(--line-strong);border-radius:16px}
+.empty-state .ic{width:34px;height:34px;color:var(--gold);margin-bottom:8px}
+
+/* ---------- Editor ---------- */
+#editor-view{padding-bottom:calc(92px + var(--safe-b))}
+.action-bar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 12px calc(10px + var(--safe-b));
+  background:rgba(0,0,0,.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line-strong)}
+.action-bar-in{max-width:920px;margin:0 auto;display:flex;gap:8px}
+.action-bar .btn-gold{flex:1}
+.action-bar .btn{padding:0 14px}
+.lbl{display:none}
+#btn-save{position:relative}
+#btn-save.dirty::after{content:"";position:absolute;top:7px;right:7px;width:9px;height:9px;border-radius:50%;background:#140e00;box-shadow:0 0 0 2px var(--gold-light)}
+
+.banner{padding:18px 14px;border-radius:18px;background:#000;border:1px solid var(--line-strong);margin-bottom:12px}
+.banner-main{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.banner-logo{width:88px;height:88px;flex:none}
+.banner-divider{width:70%;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.banner-text{display:flex;flex-direction:column;align-items:center;width:100%}
+.main-title{font:800 28px/1 var(--font-h);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.sub-title{font:700 17px/1.1 var(--font-h);letter-spacing:.2em;text-transform:uppercase;color:#fff;margin-top:5px}
+.trainer-title{font:600 12px var(--font-b);letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:5px 0 8px}
+.editable-motto{width:100%;max-width:380px;background:transparent;border:none;border-bottom:1px dashed var(--line-strong);color:#fff;text-align:center;
+  font:600 13px/1.3 var(--font-b);letter-spacing:.06em;text-transform:uppercase;outline:none;resize:none;overflow:hidden;padding:4px;display:block}
+
+.athlete{display:grid;grid-template-columns:1fr;gap:12px;padding:14px;border-radius:18px;background:rgba(10,10,10,.92);border:1px solid var(--line);margin-bottom:6px}
+.cf-l{display:flex;align-items:center;gap:7px;color:var(--gold);font-size:13px;font-weight:600;margin-bottom:5px}
+.cf-l .ic{width:17px;height:17px}
+
+#days-container{counter-reset:day}
+.day-block{counter-increment:day;margin-top:22px}
+.day-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.day-prefix{flex:none;padding:9px 13px;border-radius:10px;font:800 17px/1 var(--font-h);letter-spacing:.08em;text-transform:uppercase;color:#140e00;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold) 50%,var(--gold-deep))}
+.day-prefix::before{content:"Día " counter(day)}
+.day-head .f-group{flex:1;min-width:0;font-weight:700}
+
+.ex-table{margin-bottom:10px}
+.ex-head{display:none}
+.ex-body{counter-reset:ex}
+.ex-row{counter-increment:ex;position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:14px;margin-bottom:10px;
+  border-radius:16px;background:rgba(10,10,10,.92);border:1px solid var(--line);transition:opacity .22s,transform .22s}
+.ex-row.is-removing,.day-block.is-removing{opacity:0;transform:translateX(14px)}
+.ex-row .c-ex,.ex-row .c-notes{grid-column:1/-1}
+.ex-row .c-ex{padding-right:46px}
+.ex-row .cell label{display:block;color:var(--gold);font-size:12.5px;font-weight:600;margin-bottom:5px}
+.ex-row .c-ex label::before{content:counter(ex) ".  ";color:var(--gold-light);font-weight:700}
+.ex-row .row-del{position:absolute;top:10px;right:10px}
+.ex-row .f-sets,.ex-row .f-int,.ex-row .f-cad{text-align:center;padding-left:6px;padding-right:6px}
+.add-row-btn{width:100%;border-style:dashed}
+
+.notes-box{margin-top:22px;padding:14px;border-radius:18px;background:#000;border:1px solid var(--line-strong);border-left:4px solid var(--gold)}
+.notes-box strong{display:block;color:var(--gold);font-size:14px;margin-bottom:8px}
+.notes-box .fld{background:transparent;border-color:transparent;padding:4px 0;font-size:15px}
+.notes-box .fld:focus{box-shadow:none;border-color:transparent}
+
+.page-footer{margin-top:22px;padding:14px 0 6px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.bottom-logo{width:60px;height:60px;margin-bottom:8px;filter:drop-shadow(0 0 6px rgba(212,175,55,.3))}
+.page-footer::before{content:"";order:2;width:100%;height:1.5px;background:var(--gold);margin:4px 0 10px}
+.page-footer img{order:1}
+.footer-text{order:3;font-size:12px;color:#d8d2bf;letter-spacing:.05em;text-transform:uppercase;font-weight:600}
+
+/* ==========================================================
+   PANELES (hojas inferiores)
+   ========================================================== */
+.sheet-backdrop{position:fixed;inset:0;z-index:60;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.78)}
+.sheet-backdrop.open{display:flex}
+.sheet{width:100%;max-width:640px;max-height:92vh;max-height:92dvh;overflow-y:auto;background:#080808;border:1px solid var(--line-strong);border-bottom:none;
+  border-radius:22px 22px 0 0;padding:6px 16px calc(20px + var(--safe-b));animation:sheetUp .28s cubic-bezier(.2,.8,.2,1)}
+.sheet::before{content:"";display:block;width:42px;height:4px;border-radius:4px;background:var(--line-strong);margin:6px auto 10px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+.sheet-head h3{display:flex;align-items:center;gap:10px;font:700 21px/1 var(--font-h);letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.form-stack{display:flex;flex-direction:column;gap:12px}
+.form-row{display:flex;gap:10px;flex-wrap:wrap}
+.form-row > *{flex:1 1 150px}
+.list-box{margin-top:14px;max-height:340px;overflow-y:auto;border:1px solid var(--line);border-radius:14px;background:#000}
+.user-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px;border-bottom:1px solid var(--line)}
+.user-row:last-child{border-bottom:none}
+.user-row .u-email{font-weight:600;font-size:14px;word-break:break-all;flex:1 1 180px}
+.user-row .u-ctrl{display:flex;gap:8px;align-items:center}
+.user-row select.fld{min-height:40px;font-size:14px;padding:6px 32px 6px 10px;width:auto}
+.role-badge{color:var(--gold);font-weight:700;text-transform:capitalize;font-size:14px}
+.ex-group{padding:12px;border-bottom:1px solid var(--line)}
+.ex-group:last-child{border-bottom:none}
+.ex-group-title{color:var(--gold);font:700 17px var(--font-h);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:4px 4px 4px 12px;border-radius:999px;background:var(--s2);border:1px solid var(--line-strong);font-size:13.5px}
+.tag button{width:28px;height:28px;border-radius:50%;border:none;background:rgba(229,72,77,.15);color:#ff8a8e;display:flex;align-items:center;justify-content:center}
+.tag button .ic{width:14px;height:14px}
+
+/* ==========================================================
+   MODAL DE CONFIRMACIÓN + TOASTS
+   ========================================================== */
+.modal-backdrop{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.8)}
+.modal-backdrop.open{display:flex}
+.modal{width:100%;max-width:400px;padding:22px 18px 18px;border-radius:20px;background:#0a0a0a;border:1px solid var(--line-strong);animation:pop .22s ease}
+.modal h3{font:700 22px var(--font-h);letter-spacing:.05em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.modal p{color:#d8d2bf;white-space:pre-line;margin-bottom:18px;font-size:15px}
+.modal-actions{display:flex;gap:10px}
+.modal-actions .btn{flex:1}
+
+.toast-wrap{position:fixed;left:12px;right:12px;bottom:calc(98px + var(--safe-b));z-index:90;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:10px;max-width:460px;width:100%;padding:12px 14px;border-radius:14px;background:#0d0d0d;border:1px solid var(--line-strong);
+  box-shadow:0 10px 30px rgba(0,0,0,.6);font-weight:600;font-size:14.5px;animation:toastIn .28s ease;transition:opacity .3s,transform .3s}
+.toast.ok .ic{color:var(--ok)}
+.toast.err{border-color:rgba(229,72,77,.6)}
+.toast.err .ic{color:#ff8a8e}
+.toast.out{opacity:0;transform:translateY(8px)}
+
+/* ==========================================================
+   ANIMACIONES (solo respuesta a acciones o entrada única)
+   ========================================================== */
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.error-message.show{display:block;animation:shake .35s ease}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ==========================================================
+   TABLET / ESCRITORIO Y TABLA DE EJERCICIOS (también en impresión)
+   ========================================================== */
+/* ==========================================================
+   ANIMACIONES EXTRA
+   ========================================================== */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 6px rgba(212,175,55,.3))}50%{filter:drop-shadow(0 0 18px rgba(212,175,55,.85))}}
+@keyframes shine{0%,55%{left:-120%}100%{left:140%}}
+@keyframes pulseSoft{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes dot{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+@keyframes textShine{to{background-position:200% center}}
+@keyframes slideInR{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+@keyframes slideInL{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+@keyframes barUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes cardIn{from{opacity:0;transform:translateY(26px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes barSlide{from{background-position:200% 0}to{background-position:-200% 0}}
+@keyframes cardShine{0%,60%{left:-70%}100%{left:150%}}
+@keyframes lineGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes wmBreath{0%,100%{opacity:.11}50%{opacity:.17}}
+
+.wm{animation:wmBreath 9s ease-in-out infinite}
+#dashboard-view:not([hidden]),#editor-view:not([hidden]){animation:fadeIn .4s ease}
+
+/* Marca y encabezados */
+.brand img{animation:glow 3.4s ease-in-out infinite}
+.login-logo{animation:glow 3.2s ease-in-out infinite,float 5s ease-in-out infinite}
+.login-title{background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:textShine 4s linear infinite}
+.hero > *{position:relative}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 85% 0%,rgba(212,175,55,.22),transparent 55%);animation:pulseSoft 4.5s ease-in-out infinite}
+.hero-logo{animation:glow 3.2s ease-in-out infinite,float 5s ease-in-out infinite}
+.hero h1{background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:textShine 4s linear infinite}
+.hero p{animation:slideInR .6s ease .15s backwards}
+.stat{animation:cardIn .55s cubic-bezier(.2,.8,.2,1) backwards}
+.stat:nth-child(1){animation-delay:.12s}
+.stat:nth-child(2){animation-delay:.2s}
+.hero .cta{animation:cardIn .55s cubic-bezier(.2,.8,.2,1) .3s backwards}
+.section-title h2{animation:slideInL .5s ease .15s backwards}
+.search-wrap{animation:slideInR .5s ease .2s backwards}
+
+/* Botones dorados: destello periódico + realce al tocar */
+.btn-gold{position:relative;overflow:hidden}
+.btn-gold::before{content:"";position:absolute;top:0;left:-120%;width:50%;height:100%;pointer-events:none;
+  background:linear-gradient(110deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:shine 4.2s ease-in-out infinite}
+@media (hover:hover){
+  .btn:hover,.icon-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(212,175,55,.25)}
+  .student-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 14px 34px rgba(212,175,55,.18)}
+  .nav-item:hover{background:rgba(212,175,55,.12)}
+}
+.icon-btn.danger:hover{box-shadow:0 6px 18px rgba(229,72,77,.3)}
+#btn-save.dirty::after{animation:dot 1.4s ease-in-out infinite}
+
+/* Tarjetas de alumnos */
+.student-card{animation:cardIn .6s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(min(var(--i,0),10) * 80ms)}
+.student-card::before{animation:barSlide 3.5s linear infinite}
+.student-card::after{animation:cardShine 6s ease-in-out infinite;animation-delay:calc(var(--i,0) * 500ms)}
+.avatar::before{animation:spin 4s linear infinite}
+.chip{animation:cardIn .45s ease backwards;animation-delay:calc(min(var(--i,0),10) * 80ms + 250ms)}
+
+/* Menú lateral */
+.drawer.open .drawer-nav > *{animation:slideInR .42s cubic-bezier(.2,.8,.2,1) backwards}
+.drawer.open .drawer-nav > :nth-child(1){animation-delay:.08s}
+.drawer.open .drawer-nav > :nth-child(2){animation-delay:.13s}
+.drawer.open .drawer-nav > :nth-child(3){animation-delay:.18s}
+.drawer.open .drawer-nav > :nth-child(4){animation-delay:.23s}
+.drawer.open .drawer-nav > :nth-child(5){animation-delay:.28s}
+.drawer.open .drawer-nav > :nth-child(6){animation-delay:.33s}
+.drawer.open .drawer-nav > :nth-child(7){animation-delay:.38s}
+.drawer.open .drawer-nav > :nth-child(8){animation-delay:.43s}
+.drawer.open .drawer-nav > :nth-child(9){animation-delay:.48s}
+.drawer.open .drawer-avatar{animation:glow 3s ease-in-out infinite}
+
+/* Editor */
+.action-bar{animation:barUp .45s cubic-bezier(.2,.8,.2,1) backwards}
+.banner{animation:cardIn .55s cubic-bezier(.2,.8,.2,1) backwards}
+.banner-logo{animation:glow 3.4s ease-in-out infinite}
+.banner-divider{transform-origin:center;animation:lineGrow .8s ease .3s backwards}
+.athlete{animation:cardIn .55s cubic-bezier(.2,.8,.2,1) .1s backwards}
+.athlete .cf{animation:slideInL .45s ease backwards}
+.athlete .cf:nth-child(1){animation-delay:.15s}
+.athlete .cf:nth-child(2){animation-delay:.2s}
+.athlete .cf:nth-child(3){animation-delay:.25s}
+.athlete .cf:nth-child(4){animation-delay:.3s}
+.athlete .cf:nth-child(5){animation-delay:.35s}
+.athlete .cf:nth-child(6){animation-delay:.4s}
+.day-block{animation:cardIn .55s cubic-bezier(.2,.8,.2,1) backwards}
+.day-prefix{animation:slideInL .45s ease .1s backwards}
+.ex-row{animation:cardIn .45s cubic-bezier(.2,.8,.2,1) backwards}
+.ex-row:nth-child(2){animation-delay:.05s}
+.ex-row:nth-child(3){animation-delay:.1s}
+.ex-row:nth-child(4){animation-delay:.15s}
+.ex-row:nth-child(5){animation-delay:.2s}
+.ex-row:nth-child(6){animation-delay:.25s}
+.ex-row:nth-child(7){animation-delay:.3s}
+.ex-row:nth-child(8){animation-delay:.35s}
+.notes-box{animation:cardIn .55s ease backwards}
+.page-footer{animation:fadeIn .8s ease .3s backwards}
+.bottom-logo{animation:glow 3.4s ease-in-out infinite}
+
+/* Paneles */
+.tag{animation:cardIn .3s ease backwards}
+.user-row,.ex-group{animation:slideInR .35s ease backwards}
+.sheet-backdrop.open{animation:fadeIn .25s ease}
+
+@media (min-width:480px){
+  .lbl{display:inline}
+  .athlete{grid-template-columns:1fr 1fr}
+}
+@media (min-width:640px){
+  .sheet-backdrop{align-items:center}
+  .sheet{border-radius:22px;border-bottom:1px solid var(--line-strong);max-height:86vh}
+  .students-grid{grid-template-columns:1fr 1fr}
+  .banner-main{flex-direction:row;gap:18px}
+  .banner-divider{width:1.5px;height:96px;background:linear-gradient(180deg,transparent,var(--gold),transparent)}
+  .banner-logo{width:100px;height:100px}
+  .toast-wrap{bottom:calc(98px + var(--safe-b))}
+}
+@media (min-width:768px),print{
+  .ex-table{border:1px solid var(--line-strong);border-radius:14px;overflow:hidden;background:#000}
+  .ex-head,.ex-row{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,.9fr) minmax(0,1.9fr) minmax(0,1.1fr) minmax(0,2.4fr) 52px;gap:0}
+  .ex-head{background:#0b0b0b;border-bottom:1.5px solid var(--gold)}
+  .ex-head > div{padding:10px 10px;color:var(--gold);font-weight:700;font-size:13px;letter-spacing:.03em;border-right:1px solid var(--line)}
+  .ex-head > div:last-child{border-right:none}
+  .ex-row{padding:0;margin:0;border-radius:0;border:none;border-bottom:1px solid var(--line);background:#000}
+  .ex-row:nth-child(even){background:#070707}
+  .ex-row:last-child{border-bottom:none}
+  .ex-row .c-ex,.ex-row .c-notes{grid-column:auto;padding-right:8px}
+  .ex-row .cell{padding:8px;border-right:1px solid rgba(212,175,55,.14);display:flex;align-items:center}
+  .ex-row .cell label{display:none}
+  .ex-row .cell .fld{min-height:40px;font-size:14px;padding:8px 10px}
+  .ex-row .c-ex .fld{font-weight:600}
+  .ex-row .row-del{position:static;margin:auto}
+  .ex-row .row-del-cell{display:flex;align-items:center;justify-content:center}
+  .ex-row .f-sets,.ex-row .f-int,.ex-row .f-cad{padding-left:6px;padding-right:6px}
+}
+
+/* ==========================================================
+   IMPRESIÓN / PDF: fondo negro con detalles dorados
+   ========================================================== */
+.pv{display:none}
+@media print{
+  @page{size:A4 portrait;margin:6mm 4mm;background:#000}
+  *{animation:none!important;transition:none!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  html,body{background:#000!important;color:#fff!important;width:100%;font-size:11px}
+  body{padding:0;display:block;min-height:0}
+  /* Capa negra y marco dorado que se repiten en cada página */
+  body::before{content:"";position:fixed;inset:-12mm;background:#000;z-index:-1}
+  body::after{content:"";position:fixed;inset:0;border:1.5px solid var(--gold);border-radius:6px;pointer-events:none;z-index:5}
+  .no-print,.topbar,.drawer,.drawer-backdrop,.sheet-backdrop,.modal-backdrop,.toast-wrap,.action-bar,.bg,#login-screen,#dashboard-view{display:none!important}
+  #app{display:block!important;min-height:0;background:transparent!important}
+  main{max-width:none;padding:0!important;background:transparent!important}
+  #editor-view{display:block!important;padding:3mm!important;background:transparent!important}
+  .wm{position:fixed;width:480px;height:480px;opacity:.2;z-index:0}
+
+  .pv-src{display:none!important}
+  .pv{display:block;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;color:#fff;font-size:11px;line-height:1.35;font-weight:500}
+
+  /* Encabezado */
+  .banner{background:linear-gradient(135deg,#221a06 0%,#000 55%)!important;border:1.5px solid var(--gold)!important;border-radius:10px;padding:10px 12px;margin-bottom:8px;break-inside:avoid}
+  .banner-main{flex-direction:row;gap:14px}
+  .banner-logo{width:84px;height:84px}
+  .banner-divider{width:1.5px;height:84px;background:linear-gradient(180deg,transparent,var(--gold),transparent)}
+  .main-title{font-size:25px;color:var(--gold)}
+  .sub-title{font-size:14px}
+  .trainer-title{font-size:10px;margin:3px 0 4px}
+  .editable-motto.pv{text-align:center;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-light)}
+
+  /* Ficha del atleta */
+  .athlete{background:linear-gradient(135deg,#17120a,#000)!important;border:1.5px solid var(--gold)!important;border-radius:10px;
+    grid-template-columns:1fr 1fr;gap:6px 14px;padding:8px 12px;margin-bottom:6px;break-inside:avoid}
+  .athlete .cf{display:flex;align-items:center;gap:6px}
+  .cf-l{margin:0;font-size:11px;white-space:nowrap;color:var(--gold)}
+  .cf .pv{flex:1;font-weight:600}
+
+  /* Días y tabla */
+  .day-block{margin-top:10px;break-inside:avoid;page-break-inside:avoid}
+  .day-head{margin-bottom:6px;padding-bottom:5px;border-bottom:1.5px solid var(--gold);break-after:avoid;align-items:center}
+  .day-prefix{padding:5px 11px;font-size:14px;color:#000!important;border:none;
+    background:linear-gradient(135deg,var(--gold-light),var(--gold) 50%,var(--gold-deep))!important}
+  .day-head .pv{font:800 17px var(--font-h);letter-spacing:.06em;text-transform:uppercase;color:#fff}
+  .ex-table{background:#000!important;border:1.5px solid var(--gold)!important;border-radius:8px;overflow:visible;margin-bottom:4px}
+  .ex-head,.ex-row{grid-template-columns:minmax(0,3fr) minmax(0,.9fr) minmax(0,1.9fr) minmax(0,1.1fr) minmax(0,2.4fr)!important}
+  .ex-head > div.no-print,.ex-row .row-del-cell{display:none!important}
+  .ex-head{background:linear-gradient(135deg,var(--gold-light),var(--gold) 55%,var(--gold-deep))!important;border-bottom:none;border-radius:6px 6px 0 0}
+  .ex-head > div{padding:6px 8px;font-size:11px;font-weight:800;color:#000!important;border-right:1px solid rgba(0,0,0,.25)}
+  .ex-row{background:#000!important;break-inside:avoid;page-break-inside:avoid;border-bottom:1px solid rgba(212,175,55,.35)}
+  .ex-row:nth-child(even){background:#120d03!important}
+  .ex-row .cell{padding:6px 8px;display:block;border-right:1px solid rgba(212,175,55,.2)}
+  .ex-row .c-ex .pv{font-weight:700;color:var(--gold-light)}
+  .ex-row .c-sets .pv,.ex-row .c-int .pv,.ex-row .c-cad .pv{text-align:center}
+  .ex-row .c-sets .pv{font-weight:800;color:var(--gold-light)}
+
+  /* Notas y pie */
+  .notes-box{background:linear-gradient(135deg,#17120a,#000)!important;border:1.5px solid var(--gold)!important;border-left:5px solid var(--gold)!important;
+    border-radius:8px;margin-top:10px;padding:8px 12px;break-inside:avoid}
+  .notes-box .fld.pv{font-size:11px}
+  .page-footer{margin-top:10px;break-inside:avoid}
+  .bottom-logo{width:56px;height:56px}
+  .footer-text{font-size:10px;color:var(--gold-light)}
+}
+</style>
 </head>
-<body onclick="closeAllDropdowns(event)">
+<body>
 
-    <!-- FONDO DE GYM Y MARCA DE AGUA GENERAL -->
-    <div class="gym-bg-overlay"></div>
-    <div class="watermark-bg"></div>
+<!-- ÍCONOS (sprite SVG) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/><circle cx="7.5" cy="15.5" r="5.5"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM17 21v-8H7v8M7 3v5h8"/></symbol>
+  <symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M23 6l-9.5 9.5-5-5L1 18M17 6h6v6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></symbol>
+  <symbol id="i-clipboard" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M12 11v6M9 14h6"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></symbol>
+</svg>
 
-    <!-- INPUT OCULTO PARA RESTAURAR RESPALDO -->
-    <input type="file" id="restore-file-input" accept=".json,application/json" style="display:none" onchange="handleRestoreFile(event)">
+<div class="bg"></div>
+<div class="wm"></div>
 
-    <!-- PANTALLA DE LOGIN -->
-    <div id="login-screen">
-        <div class="login-card">
-            <img src="logo.png" alt="SF Logo" class="login-logo" onerror="this.style.display='none'">
-            <div class="login-title">SERGIO FERNANDEZ</div>
-            <div class="login-subtitle">PERSONAL TRAINER</div>
-            <div class="login-header-action">INICIAR SESIÓN</div>
+<input type="file" id="restore-file-input" accept=".json,application/json" hidden>
 
-            <form onsubmit="handleLogin(event)">
-                <div class="input-group">
-                    <label for="email">Correo Electrónico:</label>
-                    <input type="email" id="email" placeholder="ejemplo@correo.com" required autocomplete="off">
-                </div>
-                <div class="input-group">
-                    <label for="password">Contraseña:</label>
-                    <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
-                </div>
-                <button type="submit" class="btn-login" id="btn-login-text">Ingresar al Sistema</button>
-                <div id="login-error" class="error-message"></div>
-            </form>
+<!-- ==================== LOGIN ==================== -->
+<div id="login-screen">
+  <div class="login-card">
+    <img src="logo.png" alt="SF Logo" class="login-logo" onerror="this.style.display='none'">
+    <div class="login-title">Sergio Fernandez</div>
+    <div class="login-sub">Personal Trainer</div>
+    <form class="login-form" id="login-form" novalidate>
+      <div>
+        <label class="lbl-f" for="email">Correo electrónico</label>
+        <input class="fld" type="email" id="email" placeholder="ejemplo@correo.com" required autocomplete="username" inputmode="email" autocapitalize="none">
+      </div>
+      <div>
+        <label class="lbl-f" for="password">Contraseña</label>
+        <div class="pass-wrap">
+          <input class="fld" type="password" id="password" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
+          <button type="button" class="pass-toggle" data-action="toggle-pass" aria-label="Mostrar contraseña"><svg class="ic"><use href="#i-eye"/></svg></button>
         </div>
+      </div>
+      <button type="submit" class="btn btn-gold btn-block cta" id="btn-login">Ingresar al sistema</button>
+      <div id="login-error" class="error-message" role="alert"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== APLICACIÓN ==================== -->
+<div id="app" hidden>
+
+  <header class="topbar no-print">
+    <div class="brand">
+      <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+      <div>
+        <div class="brand-name">SF Fitness</div>
+        <div class="brand-sub">Panel del entrenador</div>
+      </div>
     </div>
+    <button class="icon-btn" data-action="menu-open" aria-label="Abrir menú"><svg class="ic"><use href="#i-menu"/></svg></button>
+  </header>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <div id="app-content">
-        <div class="container">
+  <!-- Menú lateral -->
+  <div class="drawer-backdrop no-print" id="drawer-backdrop" data-action="menu-close"></div>
+  <aside class="drawer no-print" id="drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <div class="drawer-avatar"><svg class="ic"><use href="#i-user"/></svg></div>
+      <div class="drawer-user">
+        <div class="drawer-email" id="drawer-email">—</div>
+        <div class="drawer-role" id="drawer-role"></div>
+      </div>
+      <button class="icon-btn sm" data-action="menu-close" aria-label="Cerrar menú"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <nav class="drawer-nav">
+      <div class="drawer-group">Gestión</div>
+      <button class="nav-item" data-action="open-users"><svg class="ic"><use href="#i-users"/></svg>Gestionar usuarios</button>
+      <button class="nav-item" data-action="open-exercises"><svg class="ic"><use href="#i-dumbbell"/></svg>Banco de ejercicios</button>
+      <div class="drawer-group">Seguridad y datos</div>
+      <button class="nav-item" data-action="open-password"><svg class="ic"><use href="#i-key"/></svg>Cambiar contraseña</button>
+      <button class="nav-item" data-action="backup"><svg class="ic"><use href="#i-download"/></svg>Descargar respaldo</button>
+      <button class="nav-item" data-action="restore"><svg class="ic"><use href="#i-upload"/></svg>Restaurar respaldo</button>
+      <div class="drawer-group">Sesión</div>
+      <button class="nav-item danger" data-action="logout"><svg class="ic"><use href="#i-logout"/></svg>Cerrar sesión</button>
+    </nav>
+  </aside>
 
-            <!-- BARRA SUPERIOR FIJA CON MENÚ HAMBURGUESA -->
-            <div class="top-navbar no-print">
-                <div class="navbar-brand-wrapper">
-                    <img src="logo.png" alt="Logo" class="navbar-logo-img" onerror="this.style.display='none'">
-                    <div class="navbar-brand-text">SF FITNESS SYSTEM</div>
-                </div>
-                <div class="hamburger-menu-container">
-                    <button class="hamburger-btn" onclick="toggleHamburgerMenu(event)">
-                        ☰
-                    </button>
-                    <div id="hamburger-dropdown" class="dropdown-menu-content">
-                        <button class="dropdown-item" onclick="openUserManagementPanel()"><span class="emoji-red">👥</span> Gestionar Usuarios</button>
-                        <button class="dropdown-item" onclick="openExercisePanel()"><span class="emoji-red">🏋️</span> Banco de Ejercicios</button>
-                        <button class="dropdown-item" onclick="openPasswordModal()"><span class="emoji-red">🔑</span> Cambiar Contraseña</button>
-                        <button class="dropdown-item" onclick="downloadBackup()"><span class="emoji-red">💾</span> Descargar Respaldo</button>
-                        <button class="dropdown-item" onclick="restoreBackup()"><span class="emoji-red">♻️</span> Restaurar Respaldo</button>
-                        <button class="dropdown-item" onclick="logout()"><span class="emoji-red">🚪</span> Cerrar Sesión</button>
-                    </div>
-                </div>
-            </div>
+  <main>
 
-            <!-- ========================================================== -->
-            <!-- VISTA 1: DASHBOARD / INICIO                                -->
-            <!-- ========================================================== -->
-            <div id="dashboard-view">
-                
-                <div class="dashboard-hero">
-                    <img src="logo.png" alt="SF Logo" class="hero-logo" onerror="this.style.display='none'">
-                    <h1>Sergio Fernandez</h1>
-                    <p>Personal Trainer • Panel de Gestión de Alumnos</p>
-                </div>
-
-                <div class="generate-plan-card">
-                    <h2>Generar Plan de Entrenamiento</h2>
-                    <p>Crea, edita y diseña rutinas profesionales a medida para tus alumnos con sincronización en la nube.</p>
-                    <button class="btn-gold-large" onclick="openNewPlanEditor()">
-                        <span class="emoji-red">📋</span> Crear / Nuevo Plan de Entrenamiento
-                    </button>
-                </div>
-
-                <!-- PANEL 1: GESTIÓN DE USUARIOS -->
-                <div id="user-management-panel" class="admin-panel">
-                    <div class="admin-panel-header">
-                        <h3>Gestión de Usuarios y Roles</h3>
-                        <button class="close-panel-btn" onclick="hideAllPanels()">✕</button>
-                    </div>
-                    <div class="admin-form" id="create-user-form-container">
-                        <input type="email" id="admin-new-user-email" placeholder="Correo del nuevo usuario">
-                        <input type="password" id="admin-new-user-pass" placeholder="Contraseña (mín 6 chars)">
-                        <select id="admin-new-user-role">
-                            <option value="usuario basico">Usuario Básico</option>
-                            <option value="usuario plus">Usuario Plus</option>
-                            <option value="admin">Administrador</option>
-                        </select>
-                        <button class="btn btn-sm" onclick="createNewUserByAdmin()">Crear Cuenta</button>
-                    </div>
-                    <div class="user-list-container" id="admin-users-list-container">
-                        <p style="font-size: 11px; color: #888; text-align: center;">Cargando lista de usuarios...</p>
-                    </div>
-                </div>
-
-                <!-- PANEL 2: BANCO DE EJERCICIOS -->
-                <div id="exercise-database-panel" class="admin-panel">
-                    <div class="admin-panel-header">
-                        <h3>Banco de Datos de Ejercicios y Zonas</h3>
-                        <button class="close-panel-btn" onclick="hideAllPanels()">✕</button>
-                    </div>
-                    <div class="admin-form" style="flex-direction: column; align-items: stretch; gap: 6px;">
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                            <input type="text" id="admin-new-group-input" placeholder="Nueva Zona (Ej: Abdomen)">
-                            <button class="btn btn-sm" onclick="addNewMuscleGroup()">+ Agregar Zona</button>
-                        </div>
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
-                            <select id="admin-group-target-select" style="flex: 1 1 200px;"></select>
-                            <input type="text" id="admin-new-exercise-input" placeholder="Nombre del ejercicio" style="flex: 2 1 200px;">
-                            <button class="btn btn-sm" onclick="addNewExerciseToDb()">Guardar Ejercicio</button>
-                        </div>
-                    </div>
-                    <div class="exercise-db-view" id="admin-exercise-db-container"></div>
-                </div>
-
-                <!-- PANEL 3: CAMBIAR CONTRASEÑA -->
-                <div id="password-change-panel" class="admin-panel">
-                    <div class="admin-panel-header">
-                        <h3>Seguridad • Cambiar Contraseña</h3>
-                        <button class="close-panel-btn" onclick="hideAllPanels()">✕</button>
-                    </div>
-                    <div class="password-card-grid">
-                        <div class="password-input-wrapper">
-                            <input type="password" id="current-pass-input" placeholder="Contraseña Actual" required>
-                        </div>
-                        <div class="password-input-wrapper">
-                            <input type="password" id="new-pass-input" placeholder="Nueva Contraseña (mínimo 6 caracteres)" required>
-                        </div>
-                        <button class="btn-gold-action" onclick="updateUserPassword()">Actualizar Contraseña</button>
-                    </div>
-                </div>
-
-                <!-- REGISTROS DE ALUMNOS Y PLANES -->
-                <div class="students-section-title">Alumnos y Planes Guardados en la Nube</div>
-                <div class="students-grid" id="students-grid-container">
-                    <p style="font-size: 11px; color: #888;">Cargando lista de alumnos...</p>
-                </div>
-
-            </div>
-
-            <!-- ========================================================== -->
-            <!-- VISTA 2: EDITOR DEL PLAN DE ENTRENAMIENTO                  -->
-            <!-- ========================================================== -->
-            <div id="plan-editor-view">
-                
-                <div class="quick-actions-bar no-print" style="display: flex; justify-content: space-between; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
-                    <button class="btn btn-secondary" onclick="backToDashboard()"><span class="emoji-red">⬅️</span> Volver al Inicio</button>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="btn" onclick="saveCurrentPlanToCloud()"><span class="emoji-red">☁️</span> Guardar Plan</button>
-                        <button class="btn" id="add-day-btn" onclick="addDayAndScroll()">+ Día</button>
-                        <button class="btn" onclick="triggerPrint()"><span class="emoji-red">🖨️</span> Imprimir</button>
-                    </div>
-                </div>
-
-                <div class="header-banner">
-                    <div class="header-main-layout">
-                        <div class="header-left-logo">
-                            <img src="logo.png" alt="SF Logo" class="header-logo-large" onerror="this.style.display='none'">
-                        </div>
-                        <div class="header-divider"></div>
-                        <div class="header-right-text">
-                            <div class="main-title">PLAN DE ENTRENAMIENTO</div>
-                            <div class="sub-title">SERGIO FERNANDEZ</div>
-                            <div class="trainer-title">DISCIPLINA • CONSTANCIA • RESULTADOS</div>
-                            <div class="motto-container">
-                                <textarea class="editable-motto" rows="1" oninput="autoExpandTextarea(this)" placeholder="Escribe aquí tu frase o nota...">Escribe aquí tu frase o nota personalizada...</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="athlete-card">
-                    <div class="card-field">
-                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                        <label>Nombre:</label>
-                        <input type="text" id="athlete-name" value="Sergio Fernandez">
-                    </div>
-                    <div class="card-field">
-                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 6.29 3.43 4.86 2 3.43 3.43 2 4.86 3.43 6.29 2 7.71 3.43 9.14 2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22 14.86 20.57 16.29 22 17.71 20.57 19.14 22 20.57 20.57 22 19.14 20.57 17.71 22 16.29z"/></svg>
-                        <label>Objetivo:</label>
-                        <input type="text" id="athlete-goal" value="Hipertrofia / Recomposición">
-                    </div>
-                    <div class="card-field">
-                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/></svg>
-                        <label>Fecha inicio:</label>
-                        <input type="text" id="athlete-start" value="10/08/2026">
-                    </div>
-                    <div class="card-field">
-                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-                        <label>Nivel:</label>
-                        <input type="text" id="athlete-level" value="Intermedio - Avanzado">
-                    </div>
-                    <div class="card-field">
-                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-                        <label>Fecha fin:</label>
-                        <input type="text" id="athlete-end" value="21/09/2026">
-                    </div>
-                    <div class="card-field">
-                        <svg class="gold-icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-                        <label>Días / sem:</label>
-                        <input type="text" id="athlete-days" value="4 Días">
-                    </div>
-                </div>
-
-                <div id="days-container"></div>
-
-                <div class="notes-box">
-                    <strong>Instrucciones Generales & Recomendaciones:</strong>
-                    <textarea class="editable-textarea" id="general-notes" oninput="autoExpandTextarea(this)" placeholder="Escribe aquí tus instrucciones...">Mantener una correcta hidratación durante las sesiones y respetar los tiempos de descanso indicados entre series.</textarea>
-                </div>
-                
-                <div class="page-footer-container">
-                    <img src="logo.png" alt="SF Logo" class="bottom-logo-small" onerror="this.style.display='none'">
-                    <div class="footer">
-                        Plan de entrenamiento diseñado por Sergio Fernandez • Todos los derechos reservados
-                    </div>
-                </div>
-
-            </div>
-
+    <!-- ========== VISTA 1: INICIO ========== -->
+    <section id="dashboard-view">
+      <div class="hero">
+        <div class="hero-top">
+          <img src="logo.png" alt="SF Logo" class="hero-logo" onerror="this.style.display='none'">
+          <div>
+            <h1>Sergio Fernandez</h1>
+            <p>Personal trainer · Panel de alumnos</p>
+          </div>
         </div>
+        <div class="hero-stats">
+          <div class="stat"><b id="stat-count">0</b><span>Alumnos con plan</span></div>
+          <div class="stat"><b class="role" id="stat-role">—</b><span>Tu rol</span></div>
+        </div>
+        <button class="btn btn-gold btn-block cta" data-action="new-plan"><svg class="ic"><use href="#i-clipboard"/></svg>Crear nuevo plan de entrenamiento</button>
+      </div>
+
+      <div class="section-title"><h2>Alumnos y planes</h2></div>
+      <div class="search-wrap">
+        <svg class="ic"><use href="#i-search"/></svg>
+        <input class="fld" type="search" id="student-search" placeholder="Buscar alumno por nombre u objetivo" autocomplete="off">
+      </div>
+      <div class="students-grid" id="students-grid"><p class="muted">Cargando alumnos…</p></div>
+    </section>
+
+    <!-- ========== VISTA 2: EDITOR ========== -->
+    <section id="editor-view" hidden>
+
+      <div class="action-bar no-print">
+        <div class="action-bar-in">
+          <button class="btn" data-action="back" aria-label="Volver al inicio"><svg class="ic"><use href="#i-back"/></svg><span class="lbl">Volver</span></button>
+          <button class="btn" data-action="add-day" aria-label="Agregar día"><svg class="ic"><use href="#i-plus"/></svg>Día</button>
+          <button class="btn" data-action="print" aria-label="Imprimir"><svg class="ic"><use href="#i-printer"/></svg><span class="lbl">Imprimir</span></button>
+          <button class="btn btn-gold" id="btn-save" data-action="save"><svg class="ic"><use href="#i-save"/></svg>Guardar plan</button>
+        </div>
+      </div>
+
+      <div class="banner">
+        <div class="banner-main">
+          <img src="logo.png" alt="SF Logo" class="banner-logo" onerror="this.style.display='none'">
+          <div class="banner-divider"></div>
+          <div class="banner-text">
+            <div class="main-title">Plan de entrenamiento</div>
+            <div class="sub-title">Sergio Fernandez</div>
+            <div class="trainer-title">Disciplina · Constancia · Resultados</div>
+            <textarea class="editable-motto" id="f-motto" rows="1" placeholder="Escribe aquí tu frase o nota..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="athlete">
+        <div class="cf"><div class="cf-l"><svg class="ic"><use href="#i-user"/></svg>Nombre</div><input class="fld" type="text" id="f-name" autocomplete="off"></div>
+        <div class="cf"><div class="cf-l"><svg class="ic"><use href="#i-target"/></svg>Objetivo</div><input class="fld" type="text" id="f-goal" autocomplete="off"></div>
+        <div class="cf"><div class="cf-l"><svg class="ic"><use href="#i-calendar"/></svg>Fecha inicio</div><input class="fld" type="text" id="f-start" autocomplete="off"></div>
+        <div class="cf"><div class="cf-l"><svg class="ic"><use href="#i-trend"/></svg>Nivel</div><input class="fld" type="text" id="f-level" autocomplete="off"></div>
+        <div class="cf"><div class="cf-l"><svg class="ic"><use href="#i-calendar"/></svg>Fecha fin</div><input class="fld" type="text" id="f-end" autocomplete="off"></div>
+        <div class="cf"><div class="cf-l"><svg class="ic"><use href="#i-clock"/></svg>Días por semana</div><input class="fld" type="text" id="f-days" autocomplete="off"></div>
+      </div>
+
+      <div id="days-container"></div>
+
+      <div class="notes-box">
+        <strong>Instrucciones generales y recomendaciones</strong>
+        <textarea class="fld" id="f-notes" rows="2" placeholder="Escribe aquí tus instrucciones..."></textarea>
+      </div>
+
+      <div class="page-footer">
+        <img src="logo.png" alt="SF Logo" class="bottom-logo" onerror="this.style.display='none'">
+        <div class="footer-text">Plan de entrenamiento diseñado por Sergio Fernandez · Todos los derechos reservados</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ==================== PANELES ==================== -->
+<div class="sheet-backdrop no-print" id="sheet-users" data-sheet>
+  <div class="sheet" role="dialog" aria-label="Gestión de usuarios">
+    <div class="sheet-head">
+      <h3><svg class="ic"><use href="#i-users"/></svg>Usuarios y roles</h3>
+      <button class="icon-btn sm" data-action="close-sheet" aria-label="Cerrar"><svg class="ic"><use href="#i-x"/></svg></button>
     </div>
-
-    <!-- MÓDULOS DE FIREBASE V10 Y LÓGICA -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCVl571DIVjEC3psCATBWiRpFDMKqeUGrw",
-            authDomain: "sf-fitness-84bcc.firebaseapp.com",
-            projectId: "sf-fitness-84bcc",
-            storageBucket: "sf-fitness-84bcc.firebasestorage.app",
-            messagingSenderId: "630619356302",
-            appId: "1:630619356302:web:23e231feaccf2e1decdddf",
-            measurementId: "G-KFD6PL76KK"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let currentUserData = null;
-        let inactivityTimer = null;
-        const INACTIVITY_LIMIT = 30 * 60 * 1000;
-
-        const DEFAULT_EXERCISES = {
-            "Cuádriceps": ["Sentadillas con barra libre", "Sentadillas en Smith", "Prensa 45°", "Extensora de cuádriceps", "Búlgaras"],
-            "Isquiosurales / Femorales": ["Stiff", "Peso muerto con barra", "Mesa flexora", "Silla flexora"],
-            "Glúteos": ["Hip thrust con barra", "Abducción en máquina", "Patadas en polea baja"],
-            "Espalda": ["Jalón frontal agarre prono", "Remo bajo agarre neutro", "Remo con barra", "Pullover en polea"],
-            "Pectorales": ["Press banco plano", "Press banco inclinado", "Aperturas en polea cruzada"],
-            "Hombros": ["Press militar", "Vuelos laterales", "Face pull"],
-            "Bíceps": ["Curl de bíceps martillo", "Curl en banco Scott", "Curl supino con mancuernas"],
-            "Tríceps": ["Extensión en polea alta", "Copa tríceps", "Press francés"]
-        };
-
-        window.getExerciseDatabase = async function() {
-            try {
-                const docRef = doc(db, "config", "exercise_db");
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    return docSnap.data().exercises;
-                } else {
-                    await setDoc(docRef, { exercises: DEFAULT_EXERCISES });
-                    return DEFAULT_EXERCISES;
-                }
-            } catch (error) {
-                return DEFAULT_EXERCISES;
-            }
-        };
-
-        window.saveExerciseDatabase = async function(exerciseDb) {
-            try {
-                const docRef = doc(db, "config", "exercise_db");
-                await setDoc(docRef, { exercises: exerciseDb });
-            } catch (error) {
-                alert("Error al guardar en la nube: " + error.message);
-            }
-        };
-
-        window.loadStudentsList = async function() {
-            const container = document.getElementById('students-grid-container');
-            if (!container) return;
-            container.innerHTML = '<p style="font-size: 11px; color: #888;">Cargando alumnos...</p>';
-
-            try {
-                const querySnapshot = await getDocs(collection(db, "student_plans"));
-                container.innerHTML = '';
-                if (querySnapshot.empty) {
-                    container.innerHTML = '<p style="font-size: 11px; color: #888;">No hay alumnos con planes guardados aún. Haz clic en "Crear / Nuevo Plan de Entrenamiento" para empezar.</p>';
-                    return;
-                }
-
-                querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const studentId = docSnap.id;
-                    const updatedAt = data.updatedAt ? (data.updatedAt.toDate ? data.updatedAt.toDate().toLocaleDateString() : new Date(data.updatedAt).toLocaleDateString()) : 'Reciente';
-
-                    const card = document.createElement('div');
-                    card.className = 'student-card';
-                    card.innerHTML = `
-                        <div class="student-info">
-                            <h4>👤 ${window.escapeHTML(data.name || 'Sin Nombre')}</h4>
-                            <p><strong>Objetivo:</strong> ${window.escapeHTML(data.goal || 'General')}</p>
-                            <p><strong>Actualizado:</strong> ${updatedAt}</p>
-                        </div>
-                        <div class="student-actions">
-                            <button class="btn btn-sm" onclick="window.loadStudentPlan('${studentId}')">Abrir / Editar</button>
-                            <button class="btn btn-danger btn-sm" onclick="window.deleteStudentPlan('${studentId}')">Eliminar</button>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (error) {
-                container.innerHTML = '<p style="font-size: 11px; color: #e53e3e;">Error al cargar los alumnos.</p>';
-            }
-        };
-
-        window.saveCurrentPlanToCloud = async function() {
-            const nameInput = document.getElementById('athlete-name').value.trim();
-            if (!nameInput) {
-                alert("Por favor ingresa el nombre del alumno.");
-                return;
-            }
-
-            const goal = document.getElementById('athlete-goal').value;
-            const startDate = document.getElementById('athlete-start').value;
-            const level = document.getElementById('athlete-level').value;
-            const endDate = document.getElementById('athlete-end').value;
-            const daysCount = document.getElementById('athlete-days').value;
-            const motto = document.querySelector('.editable-motto').value;
-            const notes = document.getElementById('general-notes').value;
-
-            const daysData = [];
-            const dayBlocks = document.querySelectorAll('.day-block');
-            dayBlocks.forEach(block => {
-                const dayId = block.id;
-                const groupSelect = document.getElementById(`group-select-${dayId}`);
-                const muscleGroup = groupSelect ? groupSelect.value : '';
-                
-                const rows = block.querySelectorAll('tbody tr');
-                const exercises = [];
-                rows.forEach(row => {
-                    const exSelect = row.querySelector('select[id^="ex-select-"]');
-                    const inputs = row.querySelectorAll('input');
-                    const textarea = row.querySelector('.table-textarea');
-
-                    exercises.push({
-                        exercise: exSelect ? exSelect.value : '',
-                        sets: inputs[0] ? inputs[0].value : '',
-                        intensity: inputs[1] ? inputs[1].value : '',
-                        cadence: inputs[2] ? inputs[2].value : '',
-                        notes: textarea ? textarea.value : ''
-                    });
-                });
-
-                daysData.push({ muscleGroup, exercises });
-            });
-
-            const planPayload = {
-                name: nameInput,
-                goal,
-                startDate,
-                level,
-                endDate,
-                daysCount,
-                motto,
-                notes,
-                daysData,
-                updatedAt: serverTimestamp()
-            };
-
-            if (window._savingPlan) return;
-            window._savingPlan = true;
-
-            try {
-                const docId = nameInput.toLowerCase().replace(/[^a-z0-9]/g, '_');
-                await setDoc(doc(db, "student_plans", docId), planPayload);
-                alert(`¡Plan de [${nameInput}] guardado con éxito en la nube!`);
-                window.loadStudentsList();
-            } catch (error) {
-                alert("Error al guardar el plan: " + error.message);
-            } finally {
-                window._savingPlan = false;
-            }
-        };
-
-        window.loadStudentPlan = async function(studentId) {
-            try {
-                const docSnap = await getDoc(doc(db, "student_plans", studentId));
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    
-                    document.getElementById('athlete-name').value = data.name || '';
-                    document.getElementById('athlete-goal').value = data.goal || '';
-                    document.getElementById('athlete-start').value = data.startDate || '';
-                    document.getElementById('athlete-level').value = data.level || '';
-                    document.getElementById('athlete-end').value = data.endDate || '';
-                    document.getElementById('athlete-days').value = data.daysCount || '';
-                    document.querySelector('.editable-motto').value = data.motto || '';
-                    document.getElementById('general-notes').value = data.notes || '';
-
-                    document.getElementById('days-container').innerHTML = '';
-                    dayCounter = 0;
-
-                    if (data.daysData && data.daysData.length > 0) {
-                        for (let dInfo of data.daysData) {
-                            await addDayBlock(dInfo.muscleGroup);
-                            const currentDayId = `day-${dayCounter}`;
-                            const tbody = document.getElementById(`tbody-${currentDayId}`);
-                            if (tbody && dInfo.exercises) {
-                                tbody.innerHTML = '';
-                                for (let exItem of dInfo.exercises) {
-                                    await addExerciseRowSpecific(currentDayId, exItem);
-                                }
-                            }
-                        }
-                    }
-
-                    openPlanEditor();
-                }
-            } catch (error) {
-                alert("Error al cargar el plan del alumno: " + error.message);
-            }
-        };
-
-        window.deleteStudentPlan = async function(studentId) {
-            if (confirm("¿Estás seguro de eliminar este plan y registro de alumno?")) {
-                try {
-                    await deleteDoc(doc(db, "student_plans", studentId));
-                    window.loadStudentsList();
-                } catch (error) {
-                    alert("Error al eliminar: " + error.message);
-                }
-            }
-        };
-
-        window.loadUsersListAdmin = async function() {
-            const container = document.getElementById('admin-users-list-container');
-            if (!container) return;
-            const snap = await getDocs(collection(db, "users"));
-            container.innerHTML = '';
-            
-            snap.forEach(d => {
-                const dat = d.data();
-                const uid = d.id;
-                let roleSelectorHTML = '';
-
-                if (currentUserData && currentUserData.role === 'admin') {
-                    roleSelectorHTML = `
-                        <select class="user-role-select" onchange="window.updateUserRole('${uid}', this.value)">
-                            <option value="usuario basico" ${dat.role === 'usuario basico' ? 'selected' : ''}>Usuario Básico</option>
-                            <option value="usuario plus" ${dat.role === 'usuario plus' ? 'selected' : ''}>Usuario Plus</option>
-                            <option value="admin" ${dat.role === 'admin' ? 'selected' : ''}>Admin</option>
-                        </select>
-                        <button class="btn btn-danger btn-sm" onclick="window.deleteSystemUser('${uid}')">✕</button>
-                    `;
-                } else {
-                    roleSelectorHTML = `<span style="color: #d4af37; font-weight: bold; text-transform: uppercase;">${window.escapeHTML(dat.role)}</span>`;
-                }
-
-                container.innerHTML += `
-                    <div class="user-item-row">
-                        <div><strong>${window.escapeHTML(dat.email)}</strong></div>
-                        <div style="display: flex; gap: 6px; align-items: center;">${roleSelectorHTML}</div>
-                    </div>
-                `;
-            });
-        };
-
-        window.updateUserRole = async function(uid, newRole) {
-            if (!currentUserData || currentUserData.role !== 'admin') {
-                alert("Acceso denegado: Solo los administradores pueden modificar roles.");
-                window.loadUsersListAdmin();
-                return;
-            }
-            try {
-                await updateDoc(doc(db, "users", uid), { role: newRole });
-                alert("Rol actualizado correctamente.");
-            } catch (error) {
-                alert("Error al actualizar rol: " + error.message);
-            }
-        };
-
-        window.createNewUserByAdmin = async function() {
-            if (!currentUserData || currentUserData.role !== 'admin') {
-                alert("Acceso denegado.");
-                return;
-            }
-            const email = document.getElementById('admin-new-user-email').value.trim();
-            const pass = document.getElementById('admin-new-user-pass').value.trim();
-            const role = document.getElementById('admin-new-user-role').value;
-
-            if (!email || !pass || pass.length < 6) {
-                alert("Ingresa un correo válido y contraseña de al menos 6 caracteres.");
-                return;
-            }
-
-            try {
-                const res = await createUserWithEmailAndPassword(auth, email, pass);
-                await setDoc(doc(db, "users", res.user.uid), { email, role, createdAt: new Date() });
-                alert(`Usuario [${email}] creado con éxito.`);
-                document.getElementById('admin-new-user-email').value = '';
-                document.getElementById('admin-new-user-pass').value = '';
-                window.loadUsersListAdmin();
-            } catch (error) {
-                alert("Error: " + error.message);
-            }
-        };
-
-        window.deleteSystemUser = async function(uid) {
-            if (!currentUserData || currentUserData.role !== 'admin') return;
-            if (confirm("¿Estás seguro de eliminar este usuario del sistema?")) {
-                try {
-                    await deleteDoc(doc(db, "users", uid));
-                    window.loadUsersListAdmin();
-                } catch (error) {
-                    alert("Error al eliminar registro: " + error.message);
-                }
-            }
-        };
-
-        window.updateUserPassword = async function() {
-            const currentPass = document.getElementById('current-pass-input').value;
-            const newPass = document.getElementById('new-pass-input').value;
-
-            if (!currentPass || !newPass || newPass.length < 6) {
-                alert("Completa ambos campos. La nueva contraseña debe tener al menos 6 caracteres.");
-                return;
-            }
-
-            const user = auth.currentUser;
-            if (!user) return;
-
-            try {
-                const credential = EmailAuthProvider.credential(user.email, currentPass);
-                await reauthenticateWithCredential(user, credential);
-                await updatePassword(user, newPass);
-                alert("¡Contraseña actualizada con éxito!");
-                document.getElementById('current-pass-input').value = '';
-                document.getElementById('new-pass-input').value = '';
-                hideAllPanels();
-            } catch (error) {
-                alert("Error: Contraseña actual incorrecta o fallo de autenticación.");
-            }
-        };
-
-        // ==========================================================
-        // RESPALDO: DESCARGAR Y RESTAURAR
-        // ==========================================================
-        function fechaATexto(valor) {
-            return valor && typeof valor.toDate === 'function' ? valor.toDate().toISOString() : valor;
-        }
-
-        window.downloadBackup = async function() {
-            document.getElementById('hamburger-dropdown').classList.remove('show');
-
-            try {
-                const backup = {
-                    app: "SF Fitness System",
-                    version: 1,
-                    createdAt: new Date().toISOString(),
-                    student_plans: {},
-                    exercise_db: null,
-                    users: {}
-                };
-
-                // Planes de alumnos
-                const plansSnap = await getDocs(collection(db, "student_plans"));
-                plansSnap.forEach(d => {
-                    const data = d.data();
-                    data.updatedAt = fechaATexto(data.updatedAt);
-                    backup.student_plans[d.id] = data;
-                });
-
-                // Banco de ejercicios
-                const exSnap = await getDoc(doc(db, "config", "exercise_db"));
-                if (exSnap.exists()) backup.exercise_db = exSnap.data().exercises;
-
-                // Usuarios y roles (solo si eres admin)
-                if (currentUserData && currentUserData.role === 'admin') {
-                    const usersSnap = await getDocs(collection(db, "users"));
-                    usersSnap.forEach(d => {
-                        const u = d.data();
-                        backup.users[d.id] = {
-                            email: u.email,
-                            role: u.role,
-                            createdAt: fechaATexto(u.createdAt),
-                            lastLogin: fechaATexto(u.lastLogin)
-                        };
-                    });
-                }
-
-                // Descargar el archivo
-                const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                const hoy = new Date().toISOString().slice(0, 10);
-                a.href = url;
-                a.download = `respaldo-sf-fitness-${hoy}.json`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                URL.revokeObjectURL(url);
-
-                alert(`Respaldo descargado: ${Object.keys(backup.student_plans).length} plan(es) de alumnos.`);
-            } catch (error) {
-                alert("Error al generar el respaldo: " + error.message);
-            }
-        };
-
-        window.restoreBackup = function() {
-            document.getElementById('hamburger-dropdown').classList.remove('show');
-            if (!currentUserData || currentUserData.role !== 'admin') {
-                alert("Acceso denegado: solo los administradores pueden restaurar un respaldo.");
-                return;
-            }
-            const input = document.getElementById('restore-file-input');
-            input.value = '';
-            input.click();
-        };
-
-        window.handleRestoreFile = async function(event) {
-            const file = event.target.files && event.target.files[0];
-            if (!file) return;
-
-            try {
-                const text = await file.text();
-                const backup = JSON.parse(text);
-
-                if (!backup || backup.app !== "SF Fitness System" || typeof backup.student_plans !== 'object') {
-                    alert("El archivo no es un respaldo válido de SF Fitness System.");
-                    return;
-                }
-
-                const ids = Object.keys(backup.student_plans);
-                const fechaRespaldo = backup.createdAt ? new Date(backup.createdAt).toLocaleString() : 'fecha desconocida';
-                const mensaje = `Vas a restaurar el respaldo del ${fechaRespaldo}:\n\n` +
-                    `• ${ids.length} plan(es) de alumnos\n` +
-                    `• Banco de ejercicios: ${backup.exercise_db ? 'sí' : 'no incluido'}\n\n` +
-                    `Los planes con el mismo nombre se sobrescribirán con la versión del respaldo. ` +
-                    `Los demás planes que hoy existen NO se borran.\n\n¿Continuar?`;
-
-                if (!confirm(mensaje)) return;
-
-                let restaurados = 0;
-                for (const id of ids) {
-                    if (!/^[A-Za-z0-9_-]+$/.test(id)) continue;
-                    const data = { ...backup.student_plans[id] };
-                    if (typeof data.updatedAt === 'string') {
-                        const f = new Date(data.updatedAt);
-                        data.updatedAt = isNaN(f.getTime()) ? serverTimestamp() : f;
-                    } else if (!data.updatedAt) {
-                        data.updatedAt = serverTimestamp();
-                    }
-                    await setDoc(doc(db, "student_plans", id), data);
-                    restaurados++;
-                }
-
-                if (backup.exercise_db && typeof backup.exercise_db === 'object') {
-                    await setDoc(doc(db, "config", "exercise_db"), { exercises: backup.exercise_db });
-                }
-
-                alert(`Respaldo restaurado: ${restaurados} plan(es) de alumnos recuperados.`);
-                window.loadStudentsList();
-            } catch (error) {
-                alert("Error al restaurar el respaldo: " + error.message);
-            } finally {
-                event.target.value = '';
-            }
-        };
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const userRef = doc(db, "users", user.uid);
-                const userDoc = await getDoc(userRef);
-                const loginTimestamp = new Date();
-
-                if (userDoc.exists()) {
-                    currentUserData = userDoc.data();
-                    await updateDoc(userRef, { lastLogin: loginTimestamp });
-                } else {
-                    currentUserData = { role: 'admin', email: user.email };
-                    await setDoc(userRef, { email: user.email, role: 'admin', createdAt: loginTimestamp });
-                }
-
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-content').style.display = 'flex';
-
-                if (currentUserData.role !== 'admin') {
-                    const createUserForm = document.getElementById('create-user-form-container');
-                    if (createUserForm) createUserForm.style.display = 'none';
-                }
-
-                startInactivityTimer();
-                window.loadStudentsList();
-            } else {
-                document.getElementById('app-content').style.display = 'none';
-                document.getElementById('login-screen').style.display = 'flex';
-            }
-        });
-
-        window.handleLogin = async (event) => {
-            event.preventDefault();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const errorMsg = document.getElementById('login-error');
-            const btnLogin = document.getElementById('btn-login-text');
-
-            errorMsg.style.display = 'none';
-            btnLogin.innerText = 'Cargando...';
-            btnLogin.disabled = true;
-
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (error) {
-                errorMsg.textContent = "Error de acceso: Correo o contraseña inválidos.";
-                errorMsg.style.display = 'block';
-            } finally {
-                btnLogin.innerText = 'Ingresar al Sistema';
-                btnLogin.disabled = false;
-            }
-        };
-
-        window.logout = () => {
-            clearTimeout(inactivityTimer);
-            signOut(auth);
-        };
-
-        function resetInactivityTimer() {
-            clearTimeout(inactivityTimer);
-            if (!auth.currentUser) return;
-            inactivityTimer = setTimeout(() => {
-                alert("Sesión expirada por inactividad.");
-                window.logout();
-            }, INACTIVITY_LIMIT);
-        }
-
-        function startInactivityTimer() {
-            resetInactivityTimer();
-            ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => {
-                window.addEventListener(evt, resetInactivityTimer, { passive: true });
-            });
-        }
-    </script>
-
-    <!-- INTERFAZ Y NAVEGACIÓN -->
-    <script>
-        // --- Utilidades ---
-        window.escapeHTML = function(v) {
-            return String(v ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        };
-
-        window.resizeAllTextareas = function() {
-            const view = document.getElementById('plan-editor-view');
-            if (!view || getComputedStyle(view).display === 'none') return;
-            view.querySelectorAll('textarea').forEach(el => window.autoExpandTextarea(el));
-        };
-
-        let _resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(_resizeTimer);
-            _resizeTimer = setTimeout(window.resizeAllTextareas, 150);
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') window.hideAllPanels();
-        });
-
-        window.addDayAndScroll = async function() {
-            await window.addDayBlock();
-            const el = document.getElementById('day-' + dayCounter);
-            if (el) {
-                const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-            }
-        };
-
-        window.toggleHamburgerMenu = function(e) {
-            e.stopPropagation();
-            const dropdown = document.getElementById('hamburger-dropdown');
-            dropdown.classList.toggle('show');
-        };
-
-        window.closeAllDropdowns = function(e) {
-            const dropdown = document.getElementById('hamburger-dropdown');
-            if (dropdown && !e.target.closest('.hamburger-menu-container')) {
-                dropdown.classList.remove('show');
-            }
-        };
-
-        window.hideAllPanels = function() {
-            document.getElementById('user-management-panel').style.display = 'none';
-            document.getElementById('exercise-database-panel').style.display = 'none';
-            document.getElementById('password-change-panel').style.display = 'none';
-            document.getElementById('hamburger-dropdown').classList.remove('show');
-        }
-
-        window.openUserManagementPanel = async function() {
-            hideAllPanels();
-            const panel = document.getElementById('user-management-panel');
-            panel.style.display = 'block';
-            if (window.loadUsersListAdmin) await window.loadUsersListAdmin();
-        };
-
-        window.openExercisePanel = async function() {
-            hideAllPanels();
-            const panel = document.getElementById('exercise-database-panel');
-            panel.style.display = 'block';
-            await populateAdminGroupSelect();
-            await renderAdminExerciseView();
-        };
-
-        window.openPasswordModal = function() {
-            hideAllPanels();
-            document.getElementById('password-change-panel').style.display = 'block';
-        };
-
-        window.openNewPlanEditor = function() {
-            hideAllPanels();
-            document.getElementById('dashboard-view').style.display = 'none';
-            document.getElementById('plan-editor-view').style.display = 'block';
-            
-            document.getElementById('athlete-name').value = "Nuevo Alumno";
-            document.getElementById('athlete-goal').value = "Hipertrofia / Recomposición";
-            document.getElementById('athlete-start').value = new Date().toLocaleDateString();
-            document.getElementById('athlete-level').value = "Intermedio - Avanzado";
-            document.getElementById('athlete-end').value = "";
-            document.getElementById('athlete-days').value = "4 Días";
-            document.querySelector('.editable-motto').value = "DISCIPLINA • CONSTANCIA • RESULTADOS";
-            document.getElementById('general-notes').value = "Mantener una correcta hidratación durante las sesiones y respetar los tiempos de descanso indicados entre series.";
-
-            document.getElementById('days-container').innerHTML = '';
-            dayCounter = 0;
-            addDayBlock("Cuádriceps");
-            addDayBlock("Espalda");
-            window.resizeAllTextareas();
-            setTimeout(window.resizeAllTextareas, 500);
-        };
-
-        window.openPlanEditor = function() {
-            hideAllPanels();
-            document.getElementById('dashboard-view').style.display = 'none';
-            document.getElementById('plan-editor-view').style.display = 'block';
-            window.resizeAllTextareas();
-        };
-
-        window.backToDashboard = function() {
-            hideAllPanels();
-            document.getElementById('plan-editor-view').style.display = 'none';
-            document.getElementById('dashboard-view').style.display = 'block';
-            window.loadStudentsList();
-        };
-
-        async function populateAdminGroupSelect() {
-            const sel = document.getElementById('admin-group-target-select');
-            if (!sel) return;
-            sel.innerHTML = '';
-            const db = await window.getExerciseDatabase();
-            for (let g in db) {
-                sel.innerHTML += `<option value="${escapeHTML(g)}">${escapeHTML(g)}</option>`;
-            }
-        }
-
-        async function addNewMuscleGroup() {
-            const inp = document.getElementById('admin-new-group-input');
-            const val = inp.value.trim();
-            if (!val) return;
-            const db = await window.getExerciseDatabase();
-            if (!db[val]) {
-                db[val] = [];
-                await window.saveExerciseDatabase(db);
-                inp.value = '';
-                await populateAdminGroupSelect();
-                await renderAdminExerciseView();
-            }
-        }
-
-        async function renderAdminExerciseView() {
-            const container = document.getElementById('admin-exercise-db-container');
-            if (!container) return;
-            container.innerHTML = '';
-            const db = await window.getExerciseDatabase();
-            for (let g in db) {
-                let tags = '';
-                db[g].forEach((ex, idx) => {
-                    tags += `<span class="ex-tag">${escapeHTML(ex)} <span class="ex-tag-remove" onclick="removeExFromAdmin('${g}', ${idx})">✕</span></span>`;
-                });
-                container.innerHTML += `<div class="ex-group-item"><div class="ex-group-title">${escapeHTML(g)}</div><div class="ex-tags-container">${tags}</div></div>`;
-            }
-        }
-
-        async function addNewExerciseToDb() {
-            const sel = document.getElementById('admin-group-target-select');
-            const inp = document.getElementById('admin-new-exercise-input');
-            const g = sel ? sel.value : '';
-            const ex = inp ? inp.value.trim() : '';
-            if (!g || !ex) return;
-            const db = await window.getExerciseDatabase();
-            if (!db[g].includes(ex)) {
-                db[g].push(ex);
-                await window.saveExerciseDatabase(db);
-                inp.value = '';
-                await renderAdminExerciseView();
-            }
-        }
-
-        async function removeExFromAdmin(group, idx) {
-            const db = await window.getExerciseDatabase();
-            db[group].splice(idx, 1);
-            await window.saveExerciseDatabase(db);
-            await renderAdminExerciseView();
-        }
-
-        let dayCounter = 0;
-
-        window.addDayBlock = async function(initialGroup = "Cuádriceps") {
-            dayCounter++;
-            const container = document.getElementById('days-container');
-            const dayId = `day-${dayCounter}`;
-
-            const dayHTML = `
-                <div class="day-block" id="${dayId}" data-day-index="${dayCounter}">
-                    <div class="section-header">
-                        <div class="header-title-group">
-                            <span class="day-prefix" id="label-${dayId}">DÍA ${dayCounter}:</span>
-                            <select class="group-select-inline" id="group-select-${dayId}" onchange="updateAllRowsInDay('${dayId}')"></select>
-                        </div>
-                        <button class="btn btn-danger btn-sm no-print" onclick="removeDayBlock('${dayId}')">Eliminar Día</button>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="width: 30%;">Ejercicio</th>
-                                    <th style="width: 10%;">Series</th>
-                                    <th style="width: 20%;">Intensidad</th>
-                                    <th style="width: 12%;">Cadencia</th>
-                                    <th style="width: 23%;">Notas Técnicas</th>
-                                    <th class="remove-col" style="width: 5%;"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-${dayId}"></tbody>
-                        </table>
-                    </div>
-                    <div class="no-print" style="text-align: left; margin-top: 4px;">
-                        <button class="btn btn-sm" onclick="addExerciseRow('${dayId}')">+ Agregar Ejercicio</button>
-                    </div>
-                </div>
-            `;
-            
-            container.insertAdjacentHTML('beforeend', dayHTML);
-            await renderMuscleGroupDropdowns(dayId, initialGroup);
-
-            for (let i = 0; i < 4; i++) {
-                await addExerciseRow(dayId);
-            }
-        }
-
-        window.removeDayBlock = function(dayId) {
-            const el = document.getElementById(dayId);
-            if (el) {
-                el.classList.add('is-removing');
-                setTimeout(() => {
-                    el.remove();
-                    reorderDayBlocks();
-                }, 230);
-            }
-        }
-
-        function reorderDayBlocks() {
-            const dayBlocks = document.querySelectorAll('.day-block');
-            dayCounter = 0;
-            dayBlocks.forEach((block, index) => {
-                const newIndex = index + 1;
-                dayCounter = newIndex;
-                const oldId = block.id;
-                const newId = `day-${newIndex}`;
-
-                block.id = newId;
-                block.setAttribute('data-day-index', newIndex);
-
-                const prefixSpan = block.querySelector('.day-prefix');
-                if (prefixSpan) {
-                    prefixSpan.id = `label-${newId}`;
-                    prefixSpan.textContent = `DÍA ${newIndex}:`;
-                }
-
-                const groupSelect = block.querySelector('.group-select-inline');
-                if (groupSelect) {
-                    groupSelect.id = `group-select-${newId}`;
-                    groupSelect.setAttribute('onchange', `updateAllRowsInDay('${newId}')`);
-                }
-
-                const tbody = block.querySelector('tbody');
-                if (tbody) {
-                    tbody.id = `tbody-${newId}`;
-                }
-
-                const deleteBtn = block.querySelector('.btn-danger');
-                if (deleteBtn) {
-                    deleteBtn.setAttribute('onclick', `removeDayBlock('${newId}')`);
-                }
-
-                const addExBtn = block.querySelector('.no-print button');
-                if (addExBtn) {
-                    addExBtn.setAttribute('onclick', `addExerciseRow('${newId}')`);
-                }
-            });
-        }
-
-        async function renderMuscleGroupDropdowns(dayId, selectedValue = null) {
-            const groupSelect = document.getElementById(`group-select-${dayId}`);
-            if (!groupSelect) return;
-
-            const db = await window.getExerciseDatabase();
-            const keys = Object.keys(db);
-            if (keys.length === 0) return;
-
-            const currentVal = selectedValue && db[selectedValue] ? selectedValue : (groupSelect.value && db[groupSelect.value] ? groupSelect.value : keys[0]);
-            groupSelect.innerHTML = '';
-
-            for (let group in db) {
-                const option = document.createElement('option');
-                option.value = group;
-                option.textContent = group;
-                if (group === currentVal) option.selected = true;
-                groupSelect.appendChild(option);
-            }
-        }
-
-        window.addExerciseRow = async function(dayId) {
-            await addExerciseRowSpecific(dayId, { exercise: '', sets: '4', intensity: '10-12 REPS / RIR 2', cadence: '3-0-1-0', notes: 'Controlar excéntrica' });
-        }
-
-        async function addExerciseRowSpecific(dayId, data) {
-            const tbody = document.getElementById(`tbody-${dayId}`);
-            if (!tbody) return;
-            const rowId = `row-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-
-            const rowHTML = `
-                <tr id="${rowId}">
-                    <td><select id="ex-select-${rowId}"></select></td>
-                    <td><input type="text" value="${escapeHTML(data.sets)}" style="text-align: center;"></td>
-                    <td><input type="text" value="${escapeHTML(data.intensity)}" style="text-align: center;"></td>
-                    <td><input type="text" value="${escapeHTML(data.cadence)}" style="text-align: center;"></td>
-                    <td><textarea class="table-textarea" rows="1" oninput="autoExpandTextarea(this)">${escapeHTML(data.notes)}</textarea></td>
-                    <td class="remove-col" style="text-align: center;">
-                        <button class="btn btn-danger btn-sm" onclick="removeElement('${rowId}')">✕</button>
-                    </td>
-                </tr>
-            `;
-
-            tbody.insertAdjacentHTML('beforeend', rowHTML);
-            const groupSelect = document.getElementById(`group-select-${dayId}`);
-            const currentGroup = groupSelect ? groupSelect.value : 'Cuádriceps';
-            await populateExerciseDropdown(rowId, currentGroup, data.exercise);
-        }
-
-        async function populateExerciseDropdown(rowId, selectedGroup, selectVal = '') {
-            const exerciseSelect = document.getElementById(`ex-select-${rowId}`);
-            if (!exerciseSelect) return;
-
-            exerciseSelect.innerHTML = '';
-            const db = await window.getExerciseDatabase();
-
-            const targetGroup = db[selectedGroup] ? selectedGroup : Object.keys(db)[0];
-            const exercisesList = db[targetGroup] || [];
-
-            if (exercisesList.length > 0) {
-                exercisesList.forEach(exercise => {
-                    const option = document.createElement('option');
-                    option.value = exercise;
-                    option.textContent = exercise;
-                    if (exercise === selectVal) option.selected = true;
-                    exerciseSelect.appendChild(option);
-                });
-            } else {
-                exerciseSelect.innerHTML = '<option value="">-- Sin ejercicios --</option>';
-            }
-        }
-
-        window.updateAllRowsInDay = async function(dayId) {
-            const currentGroup = document.getElementById(`group-select-${dayId}`).value;
-            const tbody = document.getElementById(`tbody-${dayId}`);
-            if (!tbody) return;
-            const rowSelects = tbody.querySelectorAll('select[id^="ex-select-"]');
-            for (let select of rowSelects) {
-                const rowId = select.id.replace('ex-select-', '');
-                await populateExerciseDropdown(rowId, currentGroup);
-            }
-        }
-
-        window.removeElement = function(id) {
-            const el = document.getElementById(id);
-            if (el) {
-                el.classList.add('is-removing');
-                setTimeout(() => el.remove(), 230);
-            }
-        }
-
-        window.autoExpandTextarea = function(el) {
-            el.style.height = 'auto';
-            el.style.height = el.scrollHeight + 'px';
-        }
-
-        window.triggerPrint = function() {
-            window.print();
-        }
-    </script>
+    <div class="form-stack" id="create-user-form">
+      <input class="fld" type="email" id="new-user-email" placeholder="Correo del nuevo usuario" autocomplete="off" autocapitalize="none">
+      <div class="form-row">
+        <input class="fld" type="password" id="new-user-pass" placeholder="Contraseña (mín. 6 caracteres)" autocomplete="new-password">
+        <select class="fld" id="new-user-role">
+          <option value="usuario basico">Usuario básico</option>
+          <option value="usuario plus">Usuario plus</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+      <button class="btn btn-gold" data-action="add-user"><svg class="ic"><use href="#i-plus"/></svg>Crear cuenta</button>
+    </div>
+    <div class="list-box" id="users-list"><p class="muted" style="padding:14px;text-align:center">Cargando usuarios…</p></div>
+  </div>
+</div>
+
+<div class="sheet-backdrop no-print" id="sheet-exercises" data-sheet>
+  <div class="sheet" role="dialog" aria-label="Banco de ejercicios">
+    <div class="sheet-head">
+      <h3><svg class="ic"><use href="#i-dumbbell"/></svg>Banco de ejercicios</h3>
+      <button class="icon-btn sm" data-action="close-sheet" aria-label="Cerrar"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="form-stack">
+      <div class="form-row">
+        <input class="fld" type="text" id="new-group-input" placeholder="Nueva zona (ej: Abdomen)" autocomplete="off">
+        <button class="btn" data-action="add-group" style="flex:0 0 auto"><svg class="ic"><use href="#i-plus"/></svg>Agregar zona</button>
+      </div>
+      <select class="fld" id="group-target-select"></select>
+      <div class="form-row">
+        <input class="fld" type="text" id="new-exercise-input" placeholder="Nombre del ejercicio" autocomplete="off" style="flex:2 1 200px">
+        <button class="btn btn-gold" data-action="add-exercise" style="flex:0 0 auto"><svg class="ic"><use href="#i-save"/></svg>Guardar ejercicio</button>
+      </div>
+    </div>
+    <div class="list-box" id="exercise-bank"></div>
+  </div>
+</div>
+
+<div class="sheet-backdrop no-print" id="sheet-password" data-sheet>
+  <div class="sheet" role="dialog" aria-label="Cambiar contraseña">
+    <div class="sheet-head">
+      <h3><svg class="ic"><use href="#i-shield"/></svg>Cambiar contraseña</h3>
+      <button class="icon-btn sm" data-action="close-sheet" aria-label="Cerrar"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="form-stack">
+      <input class="fld" type="password" id="current-pass" placeholder="Contraseña actual" autocomplete="current-password">
+      <input class="fld" type="password" id="new-pass" placeholder="Nueva contraseña (mínimo 6 caracteres)" autocomplete="new-password">
+      <button class="btn btn-gold" data-action="update-pass"><svg class="ic"><use href="#i-check"/></svg>Actualizar contraseña</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmación -->
+<div class="modal-backdrop no-print" id="confirm-modal">
+  <div class="modal" role="alertdialog" aria-labelledby="cf-title">
+    <h3 id="cf-title"></h3>
+    <p id="cf-msg"></p>
+    <div class="modal-actions">
+      <button class="btn" data-action="cf-cancel">Cancelar</button>
+      <button class="btn btn-gold" id="cf-ok" data-action="cf-ok">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap no-print" id="toast-wrap" aria-live="polite"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCVl571DIVjEC3psCATBWiRpFDMKqeUGrw",
+  authDomain: "sf-fitness-84bcc.firebaseapp.com",
+  projectId: "sf-fitness-84bcc",
+  storageBucket: "sf-fitness-84bcc.firebasestorage.app",
+  messagingSenderId: "630619356302",
+  appId: "1:630619356302:web:23e231feaccf2e1decdddf",
+  measurementId: "G-KFD6PL76KK"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ==========================================================
+   UTILIDADES
+   ========================================================== */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = v => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+const ic = (n, cls = '') => `<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const slug = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+const fmtDate = v => {
+  try {
+    if (!v) return 'Reciente';
+    const d = typeof v.toDate === 'function' ? v.toDate() : new Date(v);
+    return isNaN(d.getTime()) ? 'Reciente' : d.toLocaleDateString();
+  } catch { return 'Reciente'; }
+};
+const fechaATexto = v => (v && typeof v.toDate === 'function') ? v.toDate().toISOString() : v;
+function countUp(el, to) {
+  const from = Number(el.textContent) || 0;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || from === to) { el.textContent = to; return; }
+  const t0 = performance.now(), dur = 800;
+  (function step(t) {
+    const p = Math.min(1, (t - t0) / dur);
+    el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3)));
+    if (p < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+function toast(msg, type = 'ok') {
+  const wrap = $('#toast-wrap');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = ic(type === 'err' ? 'alert' : 'check') + '<span></span>';
+  $('span', t).textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 320); }, type === 'err' ? 4800 : 3000);
+}
+
+let confirmResolve = null;
+function askConfirm(title, msg, { ok = 'Confirmar', danger = false } = {}) {
+  return new Promise(res => {
+    if (confirmResolve) confirmResolve(false);
+    confirmResolve = res;
+    $('#cf-title').textContent = title;
+    $('#cf-msg').textContent = msg;
+    const b = $('#cf-ok');
+    b.textContent = ok;
+    b.className = 'btn ' + (danger ? 'btn-danger' : 'btn-gold');
+    $('#confirm-modal').classList.add('open');
+  });
+}
+function closeConfirm(v) {
+  $('#confirm-modal').classList.remove('open');
+  if (confirmResolve) { const r = confirmResolve; confirmResolve = null; r(v); }
+}
+
+/* ==========================================================
+   ESTADO
+   ========================================================== */
+const DEFAULT_EXERCISES = {
+  "Cuádriceps": ["Sentadillas con barra libre", "Sentadillas en Smith", "Prensa 45°", "Extensora de cuádriceps", "Búlgaras"],
+  "Isquiosurales / Femorales": ["Stiff", "Peso muerto con barra", "Mesa flexora", "Silla flexora"],
+  "Glúteos": ["Hip thrust con barra", "Abducción en máquina", "Patadas en polea baja"],
+  "Espalda": ["Jalón frontal agarre prono", "Remo bajo agarre neutro", "Remo con barra", "Pullover en polea"],
+  "Pectorales": ["Press banco plano", "Press banco inclinado", "Aperturas en polea cruzada"],
+  "Hombros": ["Press militar", "Vuelos laterales", "Face pull"],
+  "Bíceps": ["Curl de bíceps martillo", "Curl en banco Scott", "Curl supino con mancuernas"],
+  "Tríceps": ["Extensión en polea alta", "Copa tríceps", "Press francés"]
+};
+const DEFAULT_NOTES = "Mantener una correcta hidratación durante las sesiones y respetar los tiempos de descanso indicados entre series.";
+
+let currentUserData = null;
+let currentUid = null;
+let inactivityTimer = null;
+const INACTIVITY_LIMIT = 30 * 60 * 1000;
+let exerciseDb = JSON.parse(JSON.stringify(DEFAULT_EXERCISES));   // caché local: evita lecturas por cada fila
+let studentsCache = [];
+let currentStudentId = null;      // id del alumno abierto (null = plan nuevo)
+let editorDirty = false;
+let saving = false;
+let loadingStudent = false;
+
+const isAdmin = () => !!currentUserData && currentUserData.role === 'admin';
+
+/* ==========================================================
+   BANCO DE EJERCICIOS (caché + Firestore)
+   ========================================================== */
+async function loadExerciseDb() {
+  try {
+    const ref = doc(db, "config", "exercise_db");
+    const snap = await getDoc(ref);
+    if (snap.exists() && snap.data().exercises) {
+      exerciseDb = snap.data().exercises;
+    } else {
+      await setDoc(ref, { exercises: DEFAULT_EXERCISES });
+      exerciseDb = JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
+    }
+  } catch (e) {
+    exerciseDb = JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
+  }
+}
+async function saveExerciseDb() {
+  try {
+    await setDoc(doc(db, "config", "exercise_db"), { exercises: exerciseDb });
+    return true;
+  } catch (e) {
+    toast("No se pudo guardar en la nube: " + e.message, 'err');
+    return false;
+  }
+}
+
+/* ==========================================================
+   PLAN: CONSTRUCCIÓN DEL EDITOR (síncrona, sin carreras)
+   ========================================================== */
+function groupOptions(selected) {
+  const list = Object.keys(exerciseDb);
+  if (selected && !list.includes(selected)) list.unshift(selected);
+  return list.map(g => `<option value="${esc(g)}"${g === selected ? ' selected' : ''}>${esc(g)}</option>`).join('');
+}
+function exerciseOptions(group, selected) {
+  const list = (exerciseDb[group] || []).slice();
+  if (selected && !list.includes(selected)) list.unshift(selected);
+  if (!list.length) return '<option value="">Sin ejercicios</option>';
+  return list.map(e => `<option value="${esc(e)}"${e === selected ? ' selected' : ''}>${esc(e)}</option>`).join('');
+}
+function rowHTML(group, d = {}) {
+  const sets = d.sets ?? '4';
+  const intensity = d.intensity ?? '10-12 REPS / RIR 2';
+  const cadence = d.cadence ?? '3-0-1-0';
+  const notes = d.notes ?? 'Controlar excéntrica';
+  return `
+    <div class="ex-row">
+      <div class="cell c-ex"><label>Ejercicio</label><select class="fld f-ex">${exerciseOptions(group, d.exercise || '')}</select></div>
+      <div class="cell c-sets"><label>Series</label><input class="fld f-sets" type="text" value="${esc(sets)}"></div>
+      <div class="cell c-int"><label>Intensidad</label><input class="fld f-int" type="text" value="${esc(intensity)}"></div>
+      <div class="cell c-cad"><label>Cadencia</label><input class="fld f-cad" type="text" value="${esc(cadence)}"></div>
+      <div class="cell c-notes"><label>Notas técnicas</label><textarea class="fld f-notes" rows="1">${esc(notes)}</textarea></div>
+      <div class="row-del-cell no-print"><button class="icon-btn sm danger row-del" data-action="del-row" aria-label="Quitar ejercicio">${ic('trash')}</button></div>
+    </div>`;
+}
+function dayHTML(group, rows) {
+  const keys = Object.keys(exerciseDb);
+  const g = group || keys[0] || '';
+  const list = Array.isArray(rows) ? rows : [{}, {}, {}, {}];
+  return `
+    <div class="day-block">
+      <div class="day-head">
+        <span class="day-prefix"></span>
+        <select class="fld f-group">${groupOptions(g)}</select>
+        <button class="icon-btn danger no-print" data-action="del-day" aria-label="Eliminar día">${ic('trash')}</button>
+      </div>
+      <div class="ex-table">
+        <div class="ex-head"><div>Ejercicio</div><div>Series</div><div>Intensidad</div><div>Cadencia</div><div>Notas técnicas</div><div class="no-print"></div></div>
+        <div class="ex-body">${list.map(r => rowHTML(g, r)).join('')}</div>
+      </div>
+      <button class="btn btn-sm add-row-btn no-print" data-action="add-row">${ic('plus', 'ic-sm')}Agregar ejercicio</button>
+    </div>`;
+}
+
+function renderPlan(data) {
+  $('#f-name').value = data.name || '';
+  $('#f-goal').value = data.goal || '';
+  $('#f-start').value = data.startDate || '';
+  $('#f-level').value = data.level || '';
+  $('#f-end').value = data.endDate || '';
+  $('#f-days').value = data.daysCount || '';
+  $('#f-motto').value = data.motto || '';
+  $('#f-notes').value = data.notes || '';
+  // Se reemplaza TODO el contenido de una sola vez: no puede quedar nada duplicado.
+  $('#days-container').innerHTML = (data.daysData || []).map(d => dayHTML(d.muscleGroup, Array.isArray(d.exercises) ? d.exercises : null)).join('');
+  setDirty(false);
+}
+
+function collectPlan() {
+  const val = id => $('#' + id).value;
+  return {
+    name: val('f-name').trim(),
+    goal: val('f-goal'),
+    startDate: val('f-start'),
+    level: val('f-level'),
+    endDate: val('f-end'),
+    daysCount: val('f-days'),
+    motto: val('f-motto'),
+    notes: val('f-notes'),
+    daysData: $$('#days-container .day-block').map(block => ({
+      muscleGroup: $('.f-group', block).value,
+      exercises: $$('.ex-row', block).map(row => ({
+        exercise: $('.f-ex', row).value,
+        sets: $('.f-sets', row).value,
+        intensity: $('.f-int', row).value,
+        cadence: $('.f-cad', row).value,
+        notes: $('.f-notes', row).value
+      }))
+    }))
+  };
+}
+
+function setDirty(v) {
+  editorDirty = v;
+  $('#btn-save').classList.toggle('dirty', v);
+}
+function autoGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+function resizeAllTextareas() {
+  if ($('#editor-view').hidden) return;
+  $$('#editor-view textarea').forEach(autoGrow);
+}
+
+/* ==========================================================
+   NAVEGACIÓN ENTRE VISTAS
+   ========================================================== */
+function showEditor() {
+  $('#dashboard-view').hidden = true;
+  $('#editor-view').hidden = false;
+  window.scrollTo(0, 0);
+  requestAnimationFrame(() => { resizeAllTextareas(); setTimeout(resizeAllTextareas, 300); });
+}
+function showDashboard() {
+  $('#editor-view').hidden = true;
+  $('#dashboard-view').hidden = false;
+  window.scrollTo(0, 0);
+}
+function newPlan() {
+  closeAllOverlays();
+  currentStudentId = null;
+  renderPlan({
+    name: 'Nuevo Alumno',
+    goal: 'Hipertrofia / Recomposición',
+    startDate: new Date().toLocaleDateString(),
+    level: 'Intermedio - Avanzado',
+    endDate: '',
+    daysCount: '4 Días',
+    motto: 'DISCIPLINA • CONSTANCIA • RESULTADOS',
+    notes: DEFAULT_NOTES,
+    daysData: [{ muscleGroup: 'Cuádriceps' }, { muscleGroup: 'Espalda' }]
+  });
+  showEditor();
+}
+async function backToDashboard() {
+  if (editorDirty) {
+    const ok = await askConfirm('Cambios sin guardar', 'Tienes cambios que no se han guardado. Si sales ahora se perderán.', { ok: 'Salir sin guardar', danger: true });
+    if (!ok) return;
+  }
+  setDirty(false);
+  showDashboard();
+  loadStudents();
+}
+
+/* ==========================================================
+   ALUMNOS
+   ========================================================== */
+async function loadStudents() {
+  const grid = $('#students-grid');
+  grid.innerHTML = '<p class="muted">Cargando alumnos…</p>';
+  try {
+    const snap = await getDocs(collection(db, "student_plans"));
+    studentsCache = [];
+    snap.forEach(d => studentsCache.push({ id: d.id, data: d.data() }));
+    studentsCache.sort((a, b) => String(a.data.name || '').localeCompare(String(b.data.name || ''), 'es'));
+    renderStudents();
+  } catch (e) {
+    grid.innerHTML = '<div class="empty-state">No se pudieron cargar los alumnos. Revisa tu conexión e inténtalo de nuevo.</div>';
+  }
+}
+function renderStudents() {
+  const grid = $('#students-grid');
+  countUp($('#stat-count'), studentsCache.length);
+  const q = $('#student-search').value.trim().toLowerCase();
+  const list = studentsCache.filter(s => !q || String(s.data.name || '').toLowerCase().includes(q) || String(s.data.goal || '').toLowerCase().includes(q));
+  if (!studentsCache.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">${ic('clipboard')}<div>Aún no hay planes guardados.<br>Crea el primero con el botón dorado de arriba.</div></div>`;
+    return;
+  }
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1">No hay alumnos que coincidan con la búsqueda.</div>';
+    return;
+  }
+  grid.innerHTML = list.map((s, idx) => {
+    const name = s.data.name || 'Sin nombre';
+    const initials = name.trim().split(/\s+/).slice(0, 2).map(w => w[0] || '').join('').toUpperCase() || '?';
+    const days = Array.isArray(s.data.daysData) ? s.data.daysData : [];
+    const exCount = days.reduce((n, d) => n + (Array.isArray(d.exercises) ? d.exercises.length : 0), 0);
+    const chips = [];
+    if (s.data.level) chips.push(ic('trend') + esc(s.data.level));
+    if (s.data.daysCount) chips.push(ic('clock') + esc(s.data.daysCount));
+    chips.push(ic('layers') + `${days.length} ${days.length === 1 ? 'día' : 'días'} · ${exCount} ejercicios`);
+    return `
+      <article class="student-card" style="--i:${idx}">
+        <div class="sc-head">
+          <div class="avatar"><span>${esc(initials)}</span></div>
+          <div class="student-info">
+            <h4>${esc(name)}</h4>
+            <div class="student-meta">${ic('target', 'ic-sm')}<span>${esc(s.data.goal || 'General')}</span></div>
+          </div>
+        </div>
+        <div class="chips">${chips.map(c => `<span class="chip">${c}</span>`).join('')}</div>
+        <div class="sc-date">${ic('calendar', 'ic-sm')}<span>Actualizado ${esc(fmtDate(s.data.updatedAt))}</span></div>
+        <div class="student-actions">
+          <button class="btn btn-gold btn-sm" data-action="open-student" data-id="${esc(s.id)}">${ic('edit', 'ic-sm')}Abrir y editar</button>
+          <button class="icon-btn sm danger" data-action="delete-student" data-id="${esc(s.id)}" aria-label="Eliminar plan">${ic('trash')}</button>
+        </div>
+      </article>`;
+  }).join('');
+}
+
+async function openStudent(id) {
+  if (loadingStudent) return;
+  loadingStudent = true;
+  try {
+    const snap = await getDoc(doc(db, "student_plans", id));
+    if (!snap.exists()) { toast('Ese plan ya no existe.', 'err'); loadStudents(); return; }
+    renderPlan(snap.data());
+    currentStudentId = id;
+    showEditor();
+  } catch (e) {
+    toast('No se pudo cargar el plan: ' + e.message, 'err');
+  } finally {
+    loadingStudent = false;
+  }
+}
+
+async function savePlan() {
+  if (saving) return;
+  const plan = collectPlan();
+  if (!plan.name) { toast('Ingresa el nombre del alumno.', 'err'); $('#f-name').focus(); return; }
+  saving = true;
+  const btn = $('#btn-save');
+  btn.disabled = true;
+  try {
+    let id = currentStudentId;
+    if (!id) {
+      id = slug(plan.name) || ('alumno_' + Date.now());
+      const existing = await getDoc(doc(db, "student_plans", id));
+      if (existing.exists()) {
+        const ok = await askConfirm('Ya existe un plan', `Ya hay un plan guardado para "${plan.name}". ¿Quieres reemplazarlo con este?`, { ok: 'Reemplazar', danger: true });
+        if (!ok) return;
+      }
+    }
+    await setDoc(doc(db, "student_plans", id), { ...plan, updatedAt: serverTimestamp() });
+    currentStudentId = id;
+    setDirty(false);
+    toast(`Plan de ${plan.name} guardado en la nube.`);
+  } catch (e) {
+    toast('No se pudo guardar el plan: ' + e.message, 'err');
+  } finally {
+    saving = false;
+    btn.disabled = false;
+  }
+}
+
+async function deleteStudent(id) {
+  const ok = await askConfirm('Eliminar plan', 'Se eliminará este plan y el registro del alumno. Esta acción no se puede deshacer.', { ok: 'Eliminar', danger: true });
+  if (!ok) return;
+  try {
+    await deleteDoc(doc(db, "student_plans", id));
+    if (currentStudentId === id) currentStudentId = null;
+    toast('Plan eliminado.');
+    loadStudents();
+  } catch (e) {
+    toast('No se pudo eliminar: ' + e.message, 'err');
+  }
+}
+
+/* ==========================================================
+   IMPRESIÓN: copia de texto de los campos (evita cortes y duplicados)
+   ========================================================== */
+function preparePrint() {
+  $$('.pv').forEach(s => s.remove());
+  $$('.pv-src').forEach(e => e.classList.remove('pv-src'));
+  $$('#editor-view select, #editor-view input[type="text"], #editor-view textarea').forEach(el => {
+    const sp = document.createElement('span');
+    sp.className = 'pv' + (el.classList.contains('editable-motto') ? ' editable-motto' : '') + (el.id === 'f-notes' ? ' fld' : '');
+    sp.textContent = el.tagName === 'SELECT' ? ((el.options[el.selectedIndex] || {}).text || '') : el.value;
+    el.classList.add('pv-src');
+    el.after(sp);
+  });
+}
+window.addEventListener('beforeprint', preparePrint);
+function triggerPrint() {
+  preparePrint();
+  setTimeout(() => window.print(), 60);
+}
+
+/* ==========================================================
+   USUARIOS
+   ========================================================== */
+async function loadUsersList() {
+  const box = $('#users-list');
+  $('#create-user-form').hidden = !isAdmin();
+  try {
+    const snap = await getDocs(collection(db, "users"));
+    let html = '';
+    snap.forEach(d => {
+      const u = d.data(), uid = d.id;
+      let ctrl;
+      if (isAdmin()) {
+        ctrl = `<select class="fld user-role-select" data-uid="${esc(uid)}">
+            <option value="usuario basico"${u.role === 'usuario basico' ? ' selected' : ''}>Usuario básico</option>
+            <option value="usuario plus"${u.role === 'usuario plus' ? ' selected' : ''}>Usuario plus</option>
+            <option value="admin"${u.role === 'admin' ? ' selected' : ''}>Admin</option>
+          </select>` +
+          (uid === currentUid ? '' : `<button class="icon-btn sm danger" data-action="delete-user" data-uid="${esc(uid)}" aria-label="Eliminar usuario">${ic('trash')}</button>`);
+      } else {
+        ctrl = `<span class="role-badge">${esc(u.role)}</span>`;
+      }
+      html += `<div class="user-row"><div class="u-email">${esc(u.email)}</div><div class="u-ctrl">${ctrl}</div></div>`;
+    });
+    box.innerHTML = html || '<p class="muted" style="padding:14px;text-align:center">No hay usuarios registrados.</p>';
+  } catch (e) {
+    box.innerHTML = '<p style="padding:14px;text-align:center;color:#ff8a8e">No se pudo cargar la lista de usuarios.</p>';
+  }
+}
+
+async function updateUserRole(uid, newRole) {
+  if (!isAdmin()) { toast('Acceso denegado: solo los administradores pueden modificar roles.', 'err'); loadUsersList(); return; }
+  try {
+    await updateDoc(doc(db, "users", uid), { role: newRole });
+    toast('Rol actualizado correctamente.');
+  } catch (e) {
+    toast('No se pudo actualizar el rol: ' + e.message, 'err');
+  }
+}
+
+async function createUserByAdmin() {
+  if (!isAdmin()) { toast('Acceso denegado.', 'err'); return; }
+  const email = $('#new-user-email').value.trim();
+  const pass = $('#new-user-pass').value.trim();
+  const role = $('#new-user-role').value;
+  if (!email || pass.length < 6) { toast('Ingresa un correo válido y una contraseña de al menos 6 caracteres.', 'err'); return; }
+  // Se usa una instancia secundaria para NO cerrar la sesión del administrador.
+  let secApp, secAuth;
+  try {
+    secApp = initializeApp(firebaseConfig, 'secondary-' + Date.now());
+    secAuth = getAuth(secApp);
+    const res = await createUserWithEmailAndPassword(secAuth, email, pass);
+    await setDoc(doc(db, "users", res.user.uid), { email, role, createdAt: new Date() });
+    await signOut(secAuth);
+    toast(`Usuario ${email} creado con éxito.`);
+    $('#new-user-email').value = '';
+    $('#new-user-pass').value = '';
+    loadUsersList();
+  } catch (e) {
+    toast('No se pudo crear el usuario: ' + e.message, 'err');
+  }
+}
+
+async function deleteSystemUser(uid) {
+  if (!isAdmin() || uid === currentUid) return;
+  const ok = await askConfirm('Eliminar usuario', 'Se eliminará este usuario del sistema.', { ok: 'Eliminar', danger: true });
+  if (!ok) return;
+  try {
+    await deleteDoc(doc(db, "users", uid));
+    loadUsersList();
+  } catch (e) {
+    toast('No se pudo eliminar el registro: ' + e.message, 'err');
+  }
+}
+
+async function updateUserPassword() {
+  const currentPass = $('#current-pass').value;
+  const newPass = $('#new-pass').value;
+  if (!currentPass || newPass.length < 6) { toast('Completa ambos campos. La nueva contraseña debe tener al menos 6 caracteres.', 'err'); return; }
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    const cred = EmailAuthProvider.credential(user.email, currentPass);
+    await reauthenticateWithCredential(user, cred);
+    await updatePassword(user, newPass);
+    toast('Contraseña actualizada con éxito.');
+    $('#current-pass').value = '';
+    $('#new-pass').value = '';
+    closeSheets();
+  } catch (e) {
+    toast('Contraseña actual incorrecta o fallo de autenticación.', 'err');
+  }
+}
+
+/* ==========================================================
+   BANCO DE EJERCICIOS (panel)
+   ========================================================== */
+function renderExerciseBank() {
+  const sel = $('#group-target-select');
+  const prev = sel.value;
+  sel.innerHTML = Object.keys(exerciseDb).map(g => `<option value="${esc(g)}">${esc(g)}</option>`).join('');
+  if (prev && exerciseDb[prev]) sel.value = prev;
+  $('#exercise-bank').innerHTML = Object.keys(exerciseDb).map(g => `
+    <div class="ex-group">
+      <div class="ex-group-title">${esc(g)}</div>
+      <div class="tags">${(exerciseDb[g] || []).map((ex, i) =>
+        `<span class="tag">${esc(ex)}<button data-action="rm-ex" data-g="${esc(g)}" data-i="${i}" aria-label="Quitar ${esc(ex)}">${ic('x')}</button></span>`).join('') || '<span class="muted" style="font-size:13px">Sin ejercicios</span>'}</div>
+    </div>`).join('');
+}
+async function addGroup() {
+  const inp = $('#new-group-input');
+  const val = inp.value.trim();
+  if (!val) return;
+  if (exerciseDb[val]) { toast('Esa zona ya existe.', 'err'); return; }
+  exerciseDb[val] = [];
+  if (await saveExerciseDb()) { inp.value = ''; renderExerciseBank(); $('#group-target-select').value = val; toast('Zona agregada.'); }
+}
+async function addExercise() {
+  const g = $('#group-target-select').value;
+  const inp = $('#new-exercise-input');
+  const ex = inp.value.trim();
+  if (!g || !ex) return;
+  if ((exerciseDb[g] || []).includes(ex)) { toast('Ese ejercicio ya existe en la zona.', 'err'); return; }
+  exerciseDb[g] = exerciseDb[g] || [];
+  exerciseDb[g].push(ex);
+  if (await saveExerciseDb()) { inp.value = ''; renderExerciseBank(); toast('Ejercicio guardado.'); }
+}
+async function removeExercise(g, i) {
+  if (!exerciseDb[g]) return;
+  exerciseDb[g].splice(i, 1);
+  if (await saveExerciseDb()) renderExerciseBank();
+}
+
+/* ==========================================================
+   RESPALDO
+   ========================================================== */
+async function downloadBackup() {
+  closeDrawer();
+  try {
+    const backup = { app: "SF Fitness System", version: 1, createdAt: new Date().toISOString(), student_plans: {}, exercise_db: null, users: {} };
+    const plansSnap = await getDocs(collection(db, "student_plans"));
+    plansSnap.forEach(d => {
+      const data = d.data();
+      data.updatedAt = fechaATexto(data.updatedAt);
+      backup.student_plans[d.id] = data;
+    });
+    const exSnap = await getDoc(doc(db, "config", "exercise_db"));
+    if (exSnap.exists()) backup.exercise_db = exSnap.data().exercises;
+    if (isAdmin()) {
+      const usersSnap = await getDocs(collection(db, "users"));
+      usersSnap.forEach(d => {
+        const u = d.data();
+        backup.users[d.id] = { email: u.email, role: u.role, createdAt: fechaATexto(u.createdAt), lastLogin: fechaATexto(u.lastLogin) };
+      });
+    }
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `respaldo-sf-fitness-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    toast(`Respaldo descargado: ${Object.keys(backup.student_plans).length} plan(es).`);
+  } catch (e) {
+    toast('Error al generar el respaldo: ' + e.message, 'err');
+  }
+}
+function restoreBackup() {
+  closeDrawer();
+  if (!isAdmin()) { toast('Acceso denegado: solo los administradores pueden restaurar un respaldo.', 'err'); return; }
+  const input = $('#restore-file-input');
+  input.value = '';
+  input.click();
+}
+async function handleRestoreFile(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  try {
+    const backup = JSON.parse(await file.text());
+    if (!backup || backup.app !== "SF Fitness System" || typeof backup.student_plans !== 'object') {
+      toast('El archivo no es un respaldo válido de SF Fitness System.', 'err');
+      return;
+    }
+    const ids = Object.keys(backup.student_plans);
+    const fecha = backup.createdAt ? new Date(backup.createdAt).toLocaleString() : 'fecha desconocida';
+    const ok = await askConfirm('Restaurar respaldo',
+      `Respaldo del ${fecha}:\n\n• ${ids.length} plan(es) de alumnos\n• Banco de ejercicios: ${backup.exercise_db ? 'incluido' : 'no incluido'}\n\nLos planes con el mismo nombre se sobrescribirán con la versión del respaldo. Los demás planes actuales no se borran.`,
+      { ok: 'Restaurar' });
+    if (!ok) return;
+    let restaurados = 0;
+    for (const id of ids) {
+      if (!/^[A-Za-z0-9_-]+$/.test(id)) continue;
+      const data = { ...backup.student_plans[id] };
+      if (typeof data.updatedAt === 'string') {
+        const f = new Date(data.updatedAt);
+        data.updatedAt = isNaN(f.getTime()) ? serverTimestamp() : f;
+      } else if (!data.updatedAt) {
+        data.updatedAt = serverTimestamp();
+      }
+      await setDoc(doc(db, "student_plans", id), data);
+      restaurados++;
+    }
+    if (backup.exercise_db && typeof backup.exercise_db === 'object') {
+      await setDoc(doc(db, "config", "exercise_db"), { exercises: backup.exercise_db });
+      exerciseDb = backup.exercise_db;
+    }
+    toast(`Respaldo restaurado: ${restaurados} plan(es) recuperados.`);
+    loadStudents();
+  } catch (e) {
+    toast('Error al restaurar el respaldo: ' + e.message, 'err');
+  } finally {
+    event.target.value = '';
+  }
+}
+
+/* ==========================================================
+   MENÚ, PANELES Y OVERLAYS
+   ========================================================== */
+function openDrawer() { $('#drawer').classList.add('open'); $('#drawer-backdrop').classList.add('open'); $('#drawer').setAttribute('aria-hidden', 'false'); }
+function closeDrawer() { $('#drawer').classList.remove('open'); $('#drawer-backdrop').classList.remove('open'); $('#drawer').setAttribute('aria-hidden', 'true'); }
+function closeSheets() { $$('[data-sheet]').forEach(s => s.classList.remove('open')); document.body.style.overflow = ''; }
+function closeAllOverlays() { closeDrawer(); closeSheets(); }
+function openSheet(id) {
+  closeDrawer();
+  closeSheets();
+  $('#' + id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+/* ==========================================================
+   SESIÓN
+   ========================================================== */
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    try {
+      const userRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userRef);
+      const now = new Date();
+      if (userDoc.exists()) {
+        currentUserData = userDoc.data();
+        await updateDoc(userRef, { lastLogin: now });
+      } else {
+        currentUserData = { role: 'admin', email: user.email };
+        await setDoc(userRef, { email: user.email, role: 'admin', createdAt: now });
+      }
+      currentUid = user.uid;
+      $('#drawer-email').textContent = user.email || currentUserData.email || '';
+      $('#drawer-role').textContent = currentUserData.role || '';
+      $('#stat-role').textContent = currentUserData.role || '—';
+      $('#login-screen').style.display = 'none';
+      $('#app').hidden = false;
+      await loadExerciseDb();
+      startInactivityTimer();
+      loadStudents();
+    } catch (e) {
+      toast('No se pudo iniciar la sesión: ' + e.message, 'err');
+    }
+  } else {
+    currentUserData = null;
+    currentUid = null;
+    currentStudentId = null;
+    studentsCache = [];
+    setDirty(false);
+    closeAllOverlays();
+    $('#app').hidden = true;
+    showDashboard();
+    $('#login-screen').style.display = 'flex';
+  }
+});
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const email = $('#email').value.trim();
+  const password = $('#password').value.trim();
+  const err = $('#login-error');
+  const btn = $('#btn-login');
+  err.classList.remove('show');
+  if (!email || !password) { err.textContent = 'Ingresa tu correo y contraseña.'; void err.offsetWidth; err.classList.add('show'); return; }
+  btn.textContent = 'Ingresando…';
+  btn.disabled = true;
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    err.textContent = 'Error de acceso: correo o contraseña inválidos.';
+    void err.offsetWidth;
+    err.classList.add('show');
+  } finally {
+    btn.textContent = 'Ingresar al sistema';
+    btn.disabled = false;
+  }
+}
+function logout() {
+  clearTimeout(inactivityTimer);
+  closeAllOverlays();
+  signOut(auth);
+}
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  if (!auth.currentUser) return;
+  inactivityTimer = setTimeout(() => { toast('Sesión cerrada por inactividad.', 'err'); logout(); }, INACTIVITY_LIMIT);
+}
+let timerStarted = false;
+function startInactivityTimer() {
+  resetInactivityTimer();
+  if (timerStarted) return;
+  timerStarted = true;
+  ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => window.addEventListener(evt, resetInactivityTimer, { passive: true }));
+}
+
+/* ==========================================================
+   EVENTOS (delegación: sin ids dinámicos ni onclick en línea)
+   ========================================================== */
+const actions = {
+  'menu-open': openDrawer,
+  'menu-close': closeDrawer,
+  'open-users': async () => { openSheet('sheet-users'); await loadUsersList(); },
+  'open-exercises': () => { renderExerciseBank(); openSheet('sheet-exercises'); },
+  'open-password': () => openSheet('sheet-password'),
+  'close-sheet': closeSheets,
+  'backup': downloadBackup,
+  'restore': restoreBackup,
+  'logout': logout,
+  'new-plan': newPlan,
+  'back': backToDashboard,
+  'save': savePlan,
+  'print': triggerPrint,
+  'add-day': () => {
+    const last = $$('#days-container .f-group').pop();
+    const g = last ? last.value : (exerciseDb['Cuádriceps'] ? 'Cuádriceps' : Object.keys(exerciseDb)[0]);
+    $('#days-container').insertAdjacentHTML('beforeend', dayHTML(g));
+    setDirty(true);
+    const days = $$('#days-container .day-block');
+    const el = days[days.length - 1];
+    requestAnimationFrame(() => {
+      resizeAllTextareas();
+      if (el) el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    });
+  },
+  'del-day': async (el) => {
+    const block = el.closest('.day-block');
+    if (!block) return;
+    const ok = await askConfirm('Eliminar día', 'Se quitará este día con todos sus ejercicios.', { ok: 'Eliminar día', danger: true });
+    if (!ok) return;
+    block.classList.add('is-removing');
+    setTimeout(() => { block.remove(); setDirty(true); }, 220);
+  },
+  'add-row': (el) => {
+    const block = el.closest('.day-block');
+    if (!block) return;
+    const g = $('.f-group', block).value;
+    $('.ex-body', block).insertAdjacentHTML('beforeend', rowHTML(g));
+    setDirty(true);
+    requestAnimationFrame(resizeAllTextareas);
+  },
+  'del-row': (el) => {
+    const row = el.closest('.ex-row');
+    if (!row) return;
+    row.classList.add('is-removing');
+    setTimeout(() => { row.remove(); setDirty(true); }, 220);
+  },
+  'open-student': (el) => openStudent(el.dataset.id),
+  'delete-student': (el) => deleteStudent(el.dataset.id),
+  'add-user': createUserByAdmin,
+  'delete-user': (el) => deleteSystemUser(el.dataset.uid),
+  'update-pass': updateUserPassword,
+  'add-group': addGroup,
+  'add-exercise': addExercise,
+  'rm-ex': (el) => removeExercise(el.dataset.g, Number(el.dataset.i)),
+  'cf-ok': () => closeConfirm(true),
+  'cf-cancel': () => closeConfirm(false),
+  'toggle-pass': (el) => {
+    const inp = $('#password');
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    $('use', el).setAttribute('href', show ? '#i-eye-off' : '#i-eye');
+    el.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+  }
+};
+
+document.addEventListener('click', (e) => {
+  // Cerrar hoja tocando el fondo
+  if (e.target.matches && e.target.matches('[data-sheet]')) { closeSheets(); return; }
+  if (e.target.id === 'confirm-modal') { closeConfirm(false); return; }
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const fn = actions[el.dataset.action];
+  if (fn) fn(el);
+});
+
+document.addEventListener('change', (e) => {
+  const t = e.target;
+  if (t.matches('.f-group')) {
+    // Al cambiar la zona del día, cada fila recarga sus ejercicios (empezando por el primero).
+    const block = t.closest('.day-block');
+    $$('.f-ex', block).forEach(sel => { sel.innerHTML = exerciseOptions(t.value, ''); });
+  }
+  if (t.matches('.user-role-select')) updateUserRole(t.dataset.uid, t.value);
+  if (t.closest('#editor-view')) setDirty(true);
+});
+document.addEventListener('input', (e) => {
+  const t = e.target;
+  if (t.closest && t.closest('#editor-view')) {
+    setDirty(true);
+    if (t.tagName === 'TEXTAREA') autoGrow(t);
+  }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if ($('#confirm-modal').classList.contains('open')) closeConfirm(false);
+    else closeAllOverlays();
+  }
+  if (e.key === 'Enter' && e.target.id === 'new-exercise-input') addExercise();
+  if (e.key === 'Enter' && e.target.id === 'new-group-input') addGroup();
+});
+
+$('#login-form').addEventListener('submit', handleLogin);
+$('#restore-file-input').addEventListener('change', handleRestoreFile);
+$('#student-search').addEventListener('input', renderStudents);
+
+let resizeTimer;
+window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(resizeAllTextareas, 150); });
+
+// Aviso al cerrar la pestaña con cambios sin guardar
+window.addEventListener('beforeunload', (e) => { if (editorDirty) { e.preventDefault(); e.returnValue = ''; } });
+</script>
 </body>
 </html>
