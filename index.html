@@ -458,12 +458,12 @@ main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:16px 14px 28px}
 .app-ver{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.04em;padding:10px 0 0}
 
 /* Documento oculto que se convierte en PDF (siempre ancho A4 = 794px) */
-.pdfx{position:fixed;left:-10000px;top:0;width:794px;background:#000;color:#fff;font-family:'Barlow','Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.35;pointer-events:none}
+.pdfx{position:fixed;left:-10000px;top:0;width:794px;background:transparent;color:#fff;font-family:'Barlow','Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.35;pointer-events:none}
 .pdfx *{box-sizing:border-box;margin:0;padding:0}
 .pdfx .u{padding:0 30px 10px}
 .pdfx .u.t{padding-bottom:0}
 .pdfx .u.t.end{padding-bottom:14px}
-.pdfx .ban{display:flex;align-items:center;gap:18px;padding:16px 18px;border:2px solid #d4af37;border-radius:14px;background:linear-gradient(135deg,#221a06,#000 55%)}
+.pdfx .ban{display:flex;align-items:center;gap:18px;padding:16px 18px;border:2px solid #d4af37;border-radius:14px;background:linear-gradient(135deg,rgba(34,26,6,.55),rgba(0,0,0,.30) 55%)}
 .pdfx .ban img{width:96px;height:96px;object-fit:contain;flex:none}
 .pdfx .ban .dv{width:2px;align-self:stretch;background:linear-gradient(180deg,transparent,#d4af37,transparent);flex:none}
 .pdfx .ban .tx{flex:1;min-width:0;text-align:center}
@@ -471,7 +471,7 @@ main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:16px 14px 28px}
 .pdfx .st{font:700 18px/1.1 'Barlow Condensed','Arial Narrow',Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#fff;margin-top:6px}
 .pdfx .tt{font:600 11px 'Barlow',Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#d4af37;margin:6px 0 8px}
 .pdfx .mo{font:600 12px/1.3 'Barlow',Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#ecd27a;white-space:pre-wrap;overflow-wrap:anywhere}
-.pdfx .ath{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px 18px;padding:14px 18px;border:2px solid #d4af37;border-radius:14px;background:linear-gradient(135deg,#17120a,#000)}
+.pdfx .ath{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px 18px;padding:14px 18px;border:2px solid #d4af37;border-radius:14px;background:linear-gradient(135deg,rgba(23,18,10,.55),rgba(0,0,0,.30))}
 .pdfx .ath .l{color:#d4af37;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
 .pdfx .ath .v{font-size:14px;font-weight:600;color:#fff;overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap;margin-top:1px}
 .pdfx .dh{display:flex;align-items:center;gap:12px;margin:6px 0 10px;padding-bottom:7px;border-bottom:2px solid #d4af37}
@@ -482,8 +482,8 @@ main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:16px 14px 28px}
 .pdfx .tg.hd{background:linear-gradient(135deg,#ecd27a,#d4af37 55%,#a8841f);border-top:2px solid #d4af37;border-radius:9px 9px 0 0;color:#000;font-weight:800;font-size:12px}
 .pdfx .tg.hd > div{padding:8px 9px;border-right:1px solid rgba(0,0,0,.25)}
 .pdfx .tg.hd > div:last-child,.pdfx .tg.rw > div:last-child{border-right:none}
-.pdfx .tg.rw{background:#000;border-bottom:1px solid rgba(212,175,55,.35)}
-.pdfx .tg.rw.alt{background:#120d03}
+.pdfx .tg.rw{background:rgba(0,0,0,.30);border-bottom:1px solid rgba(212,175,55,.35)}
+.pdfx .tg.rw.alt{background:rgba(48,34,8,.34)}
 .pdfx .tg.rw.last{border-bottom:2px solid #d4af37;border-radius:0 0 9px 9px}
 .pdfx .tg.rw > div{padding:8px 9px;border-right:1px solid rgba(212,175,55,.2);font-size:12.5px;overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap;min-width:0}
 .pdfx .tg.rw > .e{font-weight:700;color:#ecd27a;white-space:normal}
@@ -493,7 +493,7 @@ main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:16px 14px 28px}
 .pdfx .ath .sum span{padding:5px 12px;border-radius:999px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.5);color:#ecd27a;font-size:12px;font-weight:700}
 .pdfx .dh .ct{margin-left:auto;flex:none;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a39b86}
 .pdfx .tg.rw > .x{text-align:center;font-weight:800;color:#d4af37}
-.pdfx .nb{padding:12px 16px;border:2px solid #d4af37;border-left:6px solid #d4af37;border-radius:10px;background:linear-gradient(135deg,#17120a,#000)}
+.pdfx .nb{padding:12px 16px;border:2px solid #d4af37;border-left:6px solid #d4af37;border-radius:10px;background:linear-gradient(135deg,rgba(23,18,10,.55),rgba(0,0,0,.30))}
 .pdfx .nb b{display:block;color:#d4af37;font-size:13px;margin-bottom:6px}
 .pdfx .nb div{font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
 .pdfx .ft{text-align:center;padding-top:6px}
@@ -847,7 +847,7 @@ function closeConfirm(v) {
 /* ==========================================================
    ESTADO
    ========================================================== */
-const APP_VERSION = '1.3.0';   // cambia este número cuando publiques una actualización
+const APP_VERSION = '1.3.1';   // cambia este número cuando publiques una actualización
 $$('.app-ver').forEach(el => { el.textContent = 'SF Fitness · versión ' + APP_VERSION; });
 const DEFAULT_EXERCISES = {
   "Cuádriceps": ["Sentadillas con barra libre", "Sentadillas en Smith", "Prensa 45°", "Extensora de cuádriceps", "Búlgaras"],
@@ -1290,7 +1290,7 @@ async function buildPdf(plan) {
     if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch {} }
     await Promise.all($$('img', box).map(im => im.complete ? 1 : new Promise(r => { im.onload = im.onerror = r; })));
     const W = 794, H = box.scrollHeight;
-    const scale = Math.max(1, Math.min(2, Math.sqrt(14000000 / (W * H))));
+    const scale = Math.max(1, Math.min(1.8, Math.sqrt(14000000 / (W * H))));
     const base = box.getBoundingClientRect().top;
     const meas = u => {
       const r = u.getBoundingClientRect();
@@ -1300,18 +1300,39 @@ async function buildPdf(plan) {
     const conts = {};
     $$('.u.cont', box).forEach(u => { conts[u.dataset.day] = meas(u); });
     const canvas = await window.html2canvas(box, {
-      scale, backgroundColor: '#000000', useCORS: true, logging: false,
+      scale, backgroundColor: null, useCORS: true, logging: false,
       width: W, windowWidth: W, scrollX: 0, scrollY: 0, x: 0, y: 0,
       onclone: (doc) => { const c = doc.querySelector('.pdfx'); if (c) { c.style.left = '0'; c.style.top = '0'; c.style.position = 'absolute'; } }
     });
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
     const PW = 210, PH = 297, TOP = 8, BOT = PH - 12;
     const mmPx = PW / canvas.width;
+    // Marca de agua: el logo se dibuja detrás del contenido en cada página
+    let wm = null;
+    const logoEl = $('.ban img', box);
+    if (logoEl && logoEl.naturalWidth) {
+      try {
+        const lc = document.createElement('canvas');
+        lc.width = logoEl.naturalWidth; lc.height = logoEl.naturalHeight;
+        lc.getContext('2d').drawImage(logoEl, 0, 0);
+        wm = { url: lc.toDataURL('image/png'), w: lc.width, h: lc.height };
+      } catch {}
+    }
+    const drawWatermark = () => {
+      if (!wm) return;
+      const k = 150 / Math.max(wm.w, wm.h);
+      const dw = wm.w * k, dh = wm.h * k;
+      pdf.saveGraphicsState();
+      pdf.setGState(new pdf.GState({ opacity: 0.16 }));
+      pdf.addImage(wm.url, 'PNG', (PW - dw) / 2, (PH - dh) / 2, dw, dh, 'wm');
+      pdf.restoreGraphicsState();
+    };
     let y = TOP, first = true;
     const newPage = () => {
       if (!first) pdf.addPage();
       first = false;
       pdf.setFillColor(0, 0, 0); pdf.rect(0, 0, PW, PH, 'F');
+      drawWatermark();
       y = TOP;
     };
     // Los cortes se calculan en píxeles enteros contiguos: así no se pierde ni se duplica ninguna línea dorada.
@@ -1322,9 +1343,9 @@ async function buildPdf(plan) {
       const sc = document.createElement('canvas');
       sc.width = canvas.width; sc.height = sh;
       const ctx = sc.getContext('2d');
-      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, sc.width, sh);
+      ctx.clearRect(0, 0, sc.width, sh);
       ctx.drawImage(canvas, 0, c.a, canvas.width, sh, 0, 0, canvas.width, sh);
-      pdf.addImage(sc.toDataURL('image/jpeg', 0.95), 'JPEG', 0, y, PW, c.mm);
+      pdf.addImage(sc.toDataURL('image/png'), 'PNG', 0, y, PW, c.mm, undefined, 'FAST');
       y += c.mm;
     };
     newPage();
