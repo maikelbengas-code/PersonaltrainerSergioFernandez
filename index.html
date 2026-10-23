@@ -454,9 +454,8 @@ main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:16px 14px 28px}
 /* ==========================================================
    INSTALAR APP + PDF
    ========================================================== */
-.install-link{margin-top:2px;min-height:44px;width:100%;background:none;border:1px dashed var(--line-strong);border-radius:12px;color:var(--gold-light);
-  font:600 14px var(--font-b);display:flex;align-items:center;justify-content:center;gap:8px}
-.install-link:active{background:rgba(212,175,55,.12)}
+
+.app-ver{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.04em;padding:10px 0 0}
 
 /* Documento oculto que se convierte en PDF (siempre ancho A4 = 794px) */
 .pdfx{position:fixed;left:-10000px;top:0;width:794px;background:#000;color:#fff;font-family:'Barlow','Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.35;pointer-events:none}
@@ -472,14 +471,14 @@ main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:16px 14px 28px}
 .pdfx .st{font:700 18px/1.1 'Barlow Condensed','Arial Narrow',Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#fff;margin-top:6px}
 .pdfx .tt{font:600 11px 'Barlow',Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#d4af37;margin:6px 0 8px}
 .pdfx .mo{font:600 12px/1.3 'Barlow',Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#ecd27a;white-space:pre-wrap;overflow-wrap:anywhere}
-.pdfx .ath{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;padding:14px 18px;border:2px solid #d4af37;border-radius:14px;background:linear-gradient(135deg,#17120a,#000)}
+.pdfx .ath{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px 18px;padding:14px 18px;border:2px solid #d4af37;border-radius:14px;background:linear-gradient(135deg,#17120a,#000)}
 .pdfx .ath .l{color:#d4af37;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
 .pdfx .ath .v{font-size:14px;font-weight:600;color:#fff;overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap;margin-top:1px}
 .pdfx .dh{display:flex;align-items:center;gap:12px;margin:6px 0 10px;padding-bottom:7px;border-bottom:2px solid #d4af37}
 .pdfx .dh .pf{flex:none;padding:7px 14px;border-radius:9px;font:800 18px/1 'Barlow Condensed','Arial Narrow',Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#140e00;
   background:linear-gradient(135deg,#ecd27a,#d4af37 50%,#a8841f)}
 .pdfx .dh .gn{font:800 21px/1.1 'Barlow Condensed','Arial Narrow',Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#fff;overflow-wrap:anywhere}
-.pdfx .tg{display:grid;grid-template-columns:3fr .9fr 1.9fr 1.1fr 2.4fr;border-left:2px solid #d4af37;border-right:2px solid #d4af37}
+.pdfx .tg{display:grid;grid-template-columns:.4fr 3fr .9fr 1.8fr 1.1fr 2.3fr;border-left:2px solid #d4af37;border-right:2px solid #d4af37}
 .pdfx .tg.hd{background:linear-gradient(135deg,#ecd27a,#d4af37 55%,#a8841f);border-top:2px solid #d4af37;border-radius:9px 9px 0 0;color:#000;font-weight:800;font-size:12px}
 .pdfx .tg.hd > div{padding:8px 9px;border-right:1px solid rgba(0,0,0,.25)}
 .pdfx .tg.hd > div:last-child,.pdfx .tg.rw > div:last-child{border-right:none}
@@ -490,6 +489,10 @@ main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:16px 14px 28px}
 .pdfx .tg.rw > .e{font-weight:700;color:#ecd27a;white-space:normal}
 .pdfx .tg.rw > .s{text-align:center;font-weight:800;color:#ecd27a}
 .pdfx .tg.rw > .c,.pdfx .tg.rw > .i{text-align:center}
+.pdfx .ath .sum{grid-column:1/-1;display:flex;gap:10px;padding-top:12px;border-top:1px dashed rgba(212,175,55,.5)}
+.pdfx .ath .sum span{padding:5px 12px;border-radius:999px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.5);color:#ecd27a;font-size:12px;font-weight:700}
+.pdfx .dh .ct{margin-left:auto;flex:none;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a39b86}
+.pdfx .tg.rw > .x{text-align:center;font-weight:800;color:#d4af37}
 .pdfx .nb{padding:12px 16px;border:2px solid #d4af37;border-left:6px solid #d4af37;border-radius:10px;background:linear-gradient(135deg,#17120a,#000)}
 .pdfx .nb b{display:block;color:#d4af37;font-size:13px;margin-bottom:6px}
 .pdfx .nb div{font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
@@ -560,7 +563,7 @@ main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:16px 14px 28px}
       </div>
       <button type="submit" class="btn btn-gold btn-block cta" id="btn-login">Ingresar al sistema</button>
       <div id="login-error" class="error-message" role="alert"></div>
-      <button type="button" class="install-link" data-install data-action="install-app"><svg class="ic"><use href="#i-phone"/></svg>Instalar app en mi teléfono</button>
+      <div class="app-ver"></div>
     </form>
   </div>
 </div>
@@ -598,11 +601,10 @@ main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:16px 14px 28px}
       <button class="nav-item" data-action="open-password"><svg class="ic"><use href="#i-key"/></svg>Cambiar contraseña</button>
       <button class="nav-item" data-action="backup"><svg class="ic"><use href="#i-download"/></svg>Descargar respaldo</button>
       <button class="nav-item" data-action="restore"><svg class="ic"><use href="#i-upload"/></svg>Restaurar respaldo</button>
-      <div class="drawer-group">Aplicación</div>
-      <button class="nav-item" data-install data-action="install-app"><svg class="ic"><use href="#i-phone"/></svg>Instalar app</button>
       <div class="drawer-group">Sesión</div>
       <button class="nav-item danger" data-action="logout"><svg class="ic"><use href="#i-logout"/></svg>Cerrar sesión</button>
     </nav>
+    <div class="app-ver"></div>
   </aside>
 
   <main>
@@ -845,6 +847,8 @@ function closeConfirm(v) {
 /* ==========================================================
    ESTADO
    ========================================================== */
+const APP_VERSION = '1.3.0';   // cambia este número cuando publiques una actualización
+$$('.app-ver').forEach(el => { el.textContent = 'SF Fitness · versión ' + APP_VERSION; });
 const DEFAULT_EXERCISES = {
   "Cuádriceps": ["Sentadillas con barra libre", "Sentadillas en Smith", "Prensa 45°", "Extensora de cuádriceps", "Búlgaras"],
   "Isquiosurales / Femorales": ["Stiff", "Peso muerto con barra", "Mesa flexora", "Silla flexora"],
@@ -1234,9 +1238,12 @@ function loadPdfLibs() {
 
 function pdfRow(r, i, last) {
   return `<div class="tg rw${i % 2 ? ' alt' : ''}${last ? ' last' : ''}">
-    <div class="e">${esc(r.exercise || '')}</div><div class="s">${esc(r.sets || '')}</div><div class="i">${esc(r.intensity || '')}</div><div class="c">${esc(r.cadence || '')}</div><div class="n">${esc(r.notes || '')}</div></div>`;
+    <div class="x">${i + 1}</div><div class="e">${esc(r.exercise || '')}</div><div class="s">${esc(r.sets || '')}</div><div class="i">${esc(r.intensity || '')}</div><div class="c">${esc(r.cadence || '')}</div><div class="n">${esc(r.notes || '')}</div></div>`;
 }
+const PDF_THEAD = '<div class="tg hd"><div>#</div><div>Ejercicio</div><div>Series</div><div>Intensidad</div><div>Cadencia</div><div>Notas técnicas</div></div>';
 function pdfDocHTML(p) {
+  const days = p.daysData || [];
+  const total = days.reduce((n, d) => n + (d.exercises || []).length, 0);
   const field = (l, v) => `<div><div class="l">${l}</div><div class="v">${esc(v || '—')}</div></div>`;
   let h = `
     <div class="u"><div class="ban">
@@ -1246,24 +1253,30 @@ function pdfDocHTML(p) {
       <div class="tt">Disciplina · Constancia · Resultados</div>${p.motto ? `<div class="mo">${esc(p.motto)}</div>` : ''}</div>
     </div></div>
     <div class="u"><div class="ath">
-      ${field('Nombre', p.name)}${field('Objetivo', p.goal)}${field('Fecha inicio', p.startDate)}
-      ${field('Nivel', p.level)}${field('Fecha fin', p.endDate)}${field('Días por semana', p.daysCount)}
+      ${field('Alumno', p.name)}${field('Objetivo', p.goal)}${field('Nivel', p.level)}
+      ${field('Fecha inicio', p.startDate)}${field('Fecha fin', p.endDate)}${field('Días por semana', p.daysCount)}
+      <div class="sum"><span>${days.length} ${days.length === 1 ? 'día' : 'días'} de entrenamiento</span><span>${total} ejercicios</span></div>
     </div></div>`;
-  (p.daysData || []).forEach((d, di) => {
+  let conts = '';
+  days.forEach((d, di) => {
     const rows = d.exercises || [];
-    const head = `<div class="dh"><span class="pf">Día ${di + 1}</span><span class="gn">${esc(d.muscleGroup || '')}</span></div>
-      <div class="tg hd"><div>Ejercicio</div><div>Series</div><div>Intensidad</div><div>Cadencia</div><div>Notas técnicas</div></div>`;
-    if (!rows.length) { h += `<div class="u t end">${head}<div class="tg rw last"><div class="e" style="grid-column:1/-1;border:none">Sin ejercicios</div></div></div>`; return; }
+    const title = (extra) => `<div class="dh"><span class="pf">Día ${di + 1}</span><span class="gn">${esc(d.muscleGroup || '')}</span><span class="ct">${extra}</span></div>`;
+    if (!rows.length) {
+      h += `<div class="u t end" data-day="${di}" data-first="1">${title('sin ejercicios')}${PDF_THEAD}<div class="tg rw last"><div class="e" style="grid-column:1/-1;border:none">Sin ejercicios</div></div></div>`;
+      return;
+    }
     rows.forEach((r, i) => {
       const last = i === rows.length - 1;
-      const inner = (i === 0 ? head : '') + pdfRow(r, i, last);
-      h += `<div class="u t${last ? ' end' : ''}">${inner}</div>`;
+      const head = i === 0 ? title(`${rows.length} ejercicio${rows.length === 1 ? '' : 's'}`) + PDF_THEAD : '';
+      h += `<div class="u t${last ? ' end' : ''}" data-day="${di}" data-first="${i === 0 ? 1 : 0}">${head}${pdfRow(r, i, last)}</div>`;
     });
+    // Encabezado que se repite si el día continúa en otra página
+    conts += `<div class="u t cont" data-day="${di}">${title('continuación')}${PDF_THEAD}</div>`;
   });
   h += `
     <div class="u"><div class="nb"><b>Instrucciones generales y recomendaciones</b><div>${esc(p.notes || '')}</div></div></div>
     <div class="u"><div class="ft"><img src="logo.png" alt="" onerror="this.style.display='none'"><div class="ln"></div>
-      <div class="tx">Plan de entrenamiento diseñado por Sergio Fernandez · Todos los derechos reservados</div></div></div>`;
+      <div class="tx">Plan de entrenamiento diseñado por Sergio Fernandez · Todos los derechos reservados</div></div></div>${conts}`;
   return h;
 }
 
@@ -1277,37 +1290,61 @@ async function buildPdf(plan) {
     if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch {} }
     await Promise.all($$('img', box).map(im => im.complete ? 1 : new Promise(r => { im.onload = im.onerror = r; })));
     const W = 794, H = box.scrollHeight;
-    // Límite de tamaño de canvas en móviles: se ajusta la resolución según el largo del plan
     const scale = Math.max(1, Math.min(2, Math.sqrt(14000000 / (W * H))));
     const base = box.getBoundingClientRect().top;
-    const units = $$('.u', box).map(u => { const r = u.getBoundingClientRect(); return { top: r.top - base, h: r.height }; });
+    const meas = u => {
+      const r = u.getBoundingClientRect();
+      return { top: r.top - base, h: r.height, day: u.dataset.day === undefined ? null : Number(u.dataset.day), first: u.dataset.first === '1' };
+    };
+    const units = $$('.u:not(.cont)', box).map(meas);
+    const conts = {};
+    $$('.u.cont', box).forEach(u => { conts[u.dataset.day] = meas(u); });
     const canvas = await window.html2canvas(box, {
       scale, backgroundColor: '#000000', useCORS: true, logging: false,
       width: W, windowWidth: W, scrollX: 0, scrollY: 0, x: 0, y: 0,
       onclone: (doc) => { const c = doc.querySelector('.pdfx'); if (c) { c.style.left = '0'; c.style.top = '0'; c.style.position = 'absolute'; } }
     });
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
-    const PW = 210, PH = 297, M = 7, k = PW / W;
-    let y = M, first = true;
+    const PW = 210, PH = 297, TOP = 8, BOT = PH - 12;
+    const mmPx = PW / canvas.width;
+    let y = TOP, first = true;
     const newPage = () => {
       if (!first) pdf.addPage();
       first = false;
       pdf.setFillColor(0, 0, 0); pdf.rect(0, 0, PW, PH, 'F');
-      pdf.setDrawColor(212, 175, 55); pdf.setLineWidth(0.4); pdf.roundedRect(2.5, 2.5, PW - 5, PH - 5, 2, 2, 'S');
-      y = M;
+      y = TOP;
     };
-    newPage();
-    for (const u of units) {
-      const hmm = u.h * k;
-      if (y + hmm > PH - M && y > M) newPage();
-      const sh = Math.max(1, Math.round(u.h * scale));
+    // Los cortes se calculan en píxeles enteros contiguos: así no se pierde ni se duplica ninguna línea dorada.
+    const cut = u => { const a = Math.round(u.top * scale), b = Math.round((u.top + u.h) * scale); return { a, b, mm: (b - a) * mmPx }; };
+    const put = (u) => {
+      const c = cut(u);
+      const sh = Math.max(1, c.b - c.a);
       const sc = document.createElement('canvas');
       sc.width = canvas.width; sc.height = sh;
       const ctx = sc.getContext('2d');
       ctx.fillStyle = '#000'; ctx.fillRect(0, 0, sc.width, sh);
-      ctx.drawImage(canvas, 0, Math.round(u.top * scale), canvas.width, sh, 0, 0, canvas.width, sh);
-      pdf.addImage(sc.toDataURL('image/jpeg', 0.92), 'JPEG', 0, y, PW, hmm);
-      y += hmm;
+      ctx.drawImage(canvas, 0, c.a, canvas.width, sh, 0, 0, canvas.width, sh);
+      pdf.addImage(sc.toDataURL('image/jpeg', 0.95), 'JPEG', 0, y, PW, c.mm);
+      y += c.mm;
+    };
+    newPage();
+    for (const u of units) {
+      if (y + cut(u).mm > BOT && y > TOP) {
+        newPage();
+        if (u.day !== null && !u.first && conts[u.day]) put(conts[u.day]);
+      }
+      put(u);
+    }
+    // Marco dorado y pie de página: se dibujan AL FINAL de cada página para quedar por encima del contenido.
+    const n = pdf.getNumberOfPages();
+    for (let i = 1; i <= n; i++) {
+      pdf.setPage(i);
+      pdf.setDrawColor(212, 175, 55); pdf.setLineWidth(0.6);
+      pdf.roundedRect(3, 3, PW - 6, PH - 6, 2, 2, 'S');
+      pdf.setFont('helvetica', 'normal'); pdf.setFontSize(7.5); pdf.setTextColor(212, 175, 55);
+      pdf.text('SF Fitness  v' + APP_VERSION, 10, PH - 6.5);
+      pdf.text(String(plan.name || ''), PW / 2, PH - 6.5, { align: 'center' });
+      pdf.text('Página ' + i + ' de ' + n, PW - 10, PH - 6.5, { align: 'right' });
     }
     return pdf.output('blob');
   } finally {
@@ -1357,34 +1394,8 @@ async function exportPdf() {
 }
 
 /* ==========================================================
-   INSTALAR COMO APP (PWA)
+   APP INSTALABLE: el navegador ofrece instalarla desde su propio menú
    ========================================================== */
-let deferredInstall = null;
-const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-function updateInstallUI() {
-  const show = !isStandalone();
-  $$('[data-install]').forEach(el => { el.hidden = !show; });
-}
-window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstall = e; updateInstallUI(); });
-window.addEventListener('appinstalled', () => { deferredInstall = null; updateInstallUI(); toast('App instalada correctamente.'); });
-async function installApp() {
-  closeDrawer();
-  if (deferredInstall) {
-    const ev = deferredInstall;
-    deferredInstall = null;
-    ev.prompt();
-    try { await ev.userChoice; } catch {}
-    return;
-  }
-  if (isStandalone()) { toast('Ya estás usando la app instalada.'); return; }
-  if (isIOS()) {
-    askConfirm('Instalar en iPhone / iPad', '1. Abre esta página en Safari.\n2. Toca el botón Compartir (cuadrado con flecha).\n3. Elige "Añadir a pantalla de inicio".\n4. Toca "Añadir".', { ok: 'Entendido' });
-  } else {
-    askConfirm('Instalar la app', 'En Chrome toca el menú ⋮ y elige "Instalar aplicación" (o "Añadir a pantalla de inicio").', { ok: 'Entendido' });
-  }
-}
-updateInstallUI();
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
 }
@@ -1751,7 +1762,6 @@ const actions = {
   'save': savePlan,
   'print': triggerPrint,
   'pdf': exportPdf,
-  'install-app': installApp,
   'add-day': () => {
     const last = $$('#days-container .f-group').pop();
     const g = last ? last.value : (exerciseDb['Cuádriceps'] ? 'Cuádriceps' : Object.keys(exerciseDb)[0]);
