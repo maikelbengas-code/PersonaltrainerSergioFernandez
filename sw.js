@@ -1,6 +1,6 @@
 // SF Fitness - Service Worker
 // Si cambias index.html, sube el número de versión para forzar la actualización.
-const CACHE = 'sf-fitness-v5';
+const CACHE = 'sf-fitness-v6';
 const SHELL = ['./', 'index.html', 'manifest.json', 'logo.png'];
 
 self.addEventListener('install', (e) => {
